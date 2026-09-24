@@ -54,6 +54,11 @@ const Scene = () => {
       let progress = setProgress((value) => setLoading(value));
       const { loadCharacter } = setCharacter(renderer, scene, camera);
 
+      // Pupils: updated every frame using HeadBone's world matrix
+      type EyePupilEntry = { localPos: THREE.Vector3; disc: THREE.Mesh; r: number };
+      const eyePupilData: EyePupilEntry[] = [];
+      let headBoneRef: THREE.Object3D | null = null;
+
       loadCharacter().then((gltf) => {
         if (gltf) {
           const animations = setAnimations(gltf);
@@ -66,12 +71,42 @@ const Scene = () => {
             character.getObjectByName("rex_head") ||
             character;
           if (headBone) {
-            // Lower head slightly and move it back behind inside collar
             headBone.position.z -= 0.2;
             headBone.position.y -= 0.15;
           }
           setChar(character);
           scene.add(character);
+
+          // ── PUPIL SYSTEM ─────────────────────────────────────────────────
+          // Use hardcoded HeadBone-local positions from Blender inspection:
+          //   Eye world (Blender): (±0.160, -1.307, 14.332)
+          //   HeadBone pivot:      (0,      -0.699, 13.044)
+          //   Local Blender:       (±0.160, -0.608,  1.288)
+          //   glTF Y-up:           (±0.160,  1.288,  0.608)  ← these are the values used
+          // Discs are added to scene root and repositioned every frame.
+          headBoneRef = character.getObjectByName("HeadBone") || null;
+          const pupilMat = new THREE.MeshBasicMaterial({
+            color: new THREE.Color(0x2a1a08), // dark brown
+            depthTest: false,
+            depthWrite: false,
+            side: THREE.DoubleSide,
+          });
+          const EYE_RADIUS = 0.27;
+          const EYE_LOCAL_POSITIONS = [
+            new THREE.Vector3( 0.160, 1.288, 0.608),  // left eye
+            new THREE.Vector3(-0.160, 1.288, 0.608),  // right eye
+          ];
+          EYE_LOCAL_POSITIONS.forEach((localPos) => {
+            const disc = new THREE.Mesh(
+              new THREE.CircleGeometry(EYE_RADIUS * 0.55, 32),
+              pupilMat,
+            );
+            disc.renderOrder = 10;
+            scene.add(disc);
+            eyePupilData.push({ localPos, disc, r: EYE_RADIUS });
+          });
+          // ─────────────────────────────────────────────────────────────────
+
           screenLight = character.getObjectByName("screenlight") || null;
           progress.loaded().then(() => {
             setTimeout(() => {
@@ -116,6 +151,11 @@ const Scene = () => {
         landingDiv.addEventListener("touchstart", onTouchStart);
         landingDiv.addEventListener("touchend", onTouchEnd);
       }
+
+      // Reusable vectors for pupil update (avoids per-frame allocation)
+      const _eyeWorldCenter = new THREE.Vector3();
+      const _toCam         = new THREE.Vector3();
+
       const animate = () => {
         requestAnimationFrame(animate);
         if (headBone) {
@@ -131,6 +171,21 @@ const Scene = () => {
         if (characterModel) {
           light.setPointLight(screenLight);
         }
+
+        // ── Update pupil disc positions (follows HeadBone rotation) ────────
+        if (headBoneRef) {
+          headBoneRef.updateWorldMatrix(true, false);
+          eyePupilData.forEach(({ localPos, disc, r }) => {
+            // Convert local eye position → world space via HeadBone's matrix
+            _eyeWorldCenter.copy(localPos).applyMatrix4(headBoneRef!.matrixWorld);
+            // Push toward camera so disc sits on eye surface
+            _toCam.subVectors(camera.position, _eyeWorldCenter).normalize();
+            disc.position.copy(_eyeWorldCenter).addScaledVector(_toCam, r * 0.95);
+            disc.lookAt(camera.position);
+          });
+        }
+        // ─────────────────────────────────────────────────────────────────
+
         const delta = clock.getDelta();
         if (mixer) {
           mixer.update(delta);
