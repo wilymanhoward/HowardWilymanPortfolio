@@ -107,12 +107,80 @@ function createPupilTexture(): THREE.CanvasTexture {
   return tex;
 }
 
+function applySmileMorph(mesh: THREE.Mesh) {
+  const pos = mesh.geometry.attributes.position;
+  const count = pos.count;
+  const morphPos = new Float32Array(count * 3);
+
+  // In Three.js, non-relative morph target positions are absolute (base + delta).
+  // Non-deformed vertices MUST keep their base position (x, y, z) so they do NOT collapse to (0,0,0)!
+  mesh.geometry.morphTargetsRelative = false;
+
+  for (let i = 0; i < count; i++) {
+    const x = pos.getX(i);
+    const y = pos.getY(i);
+    const z = pos.getZ(i);
+
+    let deltaX = 0;
+    let deltaY = 0;
+    let deltaZ = 0;
+
+    const dY = Math.abs(y - (-0.26));
+    const dZ = Math.abs(z - 0.50);
+
+    // Mouth region envelope: covers lips, cheeks, chin, and inner mouth
+    if (dY < 0.28 && dZ < 0.28 && Math.abs(x) < 0.65 && z > 0.30) {
+      const dist = Math.hypot(dY / 0.25, dZ / 0.25);
+      if (dist < 1.0) {
+        const falloff = 1.0 - dist;
+        const cornerFactor = Math.min(1.0, Math.pow(Math.abs(x) / 0.35, 1.3));
+
+        // Mouth corners lift into a cheerful smile
+        const cornerLift = falloff * cornerFactor * 0.090;
+
+        // Open mouth: upper lip raises slightly, lower lip drops down cleanly
+        let openY = 0.0;
+        if (y >= -0.26) {
+          openY = falloff * (1.0 - cornerFactor) * 0.025;
+        } else {
+          openY = -falloff * (1.0 - cornerFactor) * 0.065;
+        }
+
+        deltaY = cornerLift + openY;
+        deltaX = (x > 0 ? 1 : -1) * falloff * cornerFactor * 0.025;
+        deltaZ = falloff * cornerFactor * 0.015;
+      }
+    }
+
+    // Absolute position for Three.js morph target: base + delta
+    morphPos[i * 3] = x + deltaX;
+    morphPos[i * 3 + 1] = y + deltaY;
+    morphPos[i * 3 + 2] = z + deltaZ;
+  }
+
+  mesh.geometry.morphAttributes.position = [
+    new THREE.BufferAttribute(morphPos, 3),
+  ];
+  mesh.updateMorphTargets();
+
+  if (mesh.material) {
+    if (Array.isArray(mesh.material)) {
+      mesh.material.forEach((m) => {
+        m.needsUpdate = true;
+      });
+    } else {
+      mesh.material.needsUpdate = true;
+    }
+  }
+}
+
 function applyPupilTexture(
   eyeMesh: THREE.Mesh,
   pupilCenterUniform: { value: THREE.Vector3 },
   pupilRadius: number,
   texture: THREE.CanvasTexture,
   blinkUniform: { value: number },
+  smileUniform: { value: number },
   id: string
 ) {
   const origMat = (
@@ -126,6 +194,7 @@ function applyPupilTexture(
     uPupilCenter: pupilCenterUniform,
     uPupilRadius: { value: pupilRadius },
     uBlink: blinkUniform,
+    uSmile: smileUniform,
   };
 
   mat.onBeforeCompile = (shader) => {
@@ -133,6 +202,7 @@ function applyPupilTexture(
     shader.uniforms.uPupilCenter = uniforms.uPupilCenter;
     shader.uniforms.uPupilRadius = uniforms.uPupilRadius;
     shader.uniforms.uBlink = uniforms.uBlink;
+    shader.uniforms.uSmile = uniforms.uSmile;
 
     shader.vertexShader = shader.vertexShader.replace(
       "#include <common>",
@@ -152,7 +222,8 @@ function applyPupilTexture(
        uniform sampler2D uPupilTex;
        uniform vec3 uPupilCenter;
        uniform float uPupilRadius;
-       uniform float uBlink;`
+       uniform float uBlink;
+       uniform float uSmile;`
     );
 
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -234,7 +305,15 @@ const Scene = () => {
       const pupilUniformL = { value: basePupilL.clone() };
       const pupilUniformR = { value: basePupilR.clone() };
       const blinkUniform = { value: 0.0 };
+      const smileUniform = { value: 0.0 };
       const currentPupilOffset = { x: 0, y: 0 };
+
+      // Smiling state (triggered when cursor points at social links tray)
+      const smileMeshes: THREE.Mesh[] = [];
+      let eyebrowsMesh: THREE.Mesh | null = null;
+      let baseEyebrowY = 0;
+      let isSmiling = false;
+      let currentSmile = 0;
 
       // Natural eye blinking timer state
       let nextBlinkTime = performance.now() + 2500 + Math.random() * 2000;
@@ -271,6 +350,26 @@ const Scene = () => {
             }
           });
           console.log("[DEBUG] All meshes in character:", allMeshes);
+
+          // ── SETUP SMILE MORPH TARGETS ON MOUTH & HEAD MESHES ────────────
+          const headGroup = character.getObjectByName("rex_head");
+          if (headGroup) {
+            if ((headGroup as any).isMesh) {
+              applySmileMorph(headGroup as THREE.Mesh);
+              smileMeshes.push(headGroup as THREE.Mesh);
+            }
+            headGroup.children.forEach((child: any) => {
+              if (child.isMesh) {
+                applySmileMorph(child);
+                smileMeshes.push(child);
+              }
+            });
+          }
+          eyebrowsMesh = character.getObjectByName("rex_eyebrows") as THREE.Mesh | null;
+          if (eyebrowsMesh) {
+            baseEyebrowY = eyebrowsMesh.position.y;
+          }
+          // ─────────────────────────────────────────────────────────────────
 
           // ── CUSTOMIZE CHARACTER COLORS ──────────────────────────────────
           // Black hair and eyebrows, rich dark navy blue shirt/sweater vest
@@ -332,6 +431,7 @@ const Scene = () => {
                     0.125,
                     pupilTexture,
                     blinkUniform,
+                    smileUniform,
                     "pupil_L"
                   );
                 }
@@ -353,6 +453,7 @@ const Scene = () => {
                     0.125,
                     pupilTexture,
                     blinkUniform,
+                    smileUniform,
                     "pupil_R"
                   );
                 }
@@ -406,7 +507,43 @@ const Scene = () => {
 
       document.addEventListener("mousemove", (event) => {
         onMouseMove(event);
+        const target = event.target as HTMLElement | null;
+        if (target?.closest("#social, .social-icons, .icons-section a, .icons-section span, a[href*='github'], a[href*='linkedin'], a[href*='instagram'], .contact-social")) {
+          isSmiling = true;
+        }
       });
+
+      // ── Social Icons Hover Detection (Triggers Smiling) ────────────────
+      const onSocialEnter = () => {
+        isSmiling = true;
+      };
+      const onSocialLeave = () => {
+        isSmiling = false;
+      };
+
+      const socialContainer = document.getElementById("social") || document.querySelector(".social-icons");
+      if (socialContainer) {
+        socialContainer.addEventListener("mouseenter", onSocialEnter);
+        socialContainer.addEventListener("mouseleave", onSocialLeave);
+      }
+
+      // Delegate hover check for any dynamic icon links in tray
+      const onGlobalMouseOver = (e: MouseEvent) => {
+        const target = e.target as HTMLElement | null;
+        if (target?.closest("#social, .social-icons, .icons-section a, .icons-section span, a[href*='github'], a[href*='linkedin'], a[href*='instagram'], .contact-social")) {
+          isSmiling = true;
+        }
+      };
+      const onGlobalMouseOut = (e: MouseEvent) => {
+        const next = e.relatedTarget as HTMLElement | null;
+        if (!next || !next.closest("#social, .social-icons, .icons-section a, .icons-section span, a[href*='github'], a[href*='linkedin'], a[href*='instagram'], .contact-social")) {
+          isSmiling = false;
+        }
+      };
+      document.addEventListener("mouseover", onGlobalMouseOver);
+      document.addEventListener("mouseout", onGlobalMouseOut);
+      // ───────────────────────────────────────────────────────────────────
+
       const landingDiv = document.getElementById("landingDiv");
       if (landingDiv) {
         landingDiv.addEventListener("touchstart", onTouchStart);
@@ -425,6 +562,21 @@ const Scene = () => {
             THREE.MathUtils.lerp
           );
         }
+
+        // ── Smooth smile animation when hovering over social tray ────────
+        const targetSmile = isSmiling ? 1.0 : 0.0;
+        currentSmile = THREE.MathUtils.lerp(currentSmile, targetSmile, 0.08);
+
+        smileMeshes.forEach((mesh) => {
+          if (mesh.morphTargetInfluences) {
+            mesh.morphTargetInfluences[0] = currentSmile;
+          }
+        });
+        if (eyebrowsMesh) {
+          eyebrowsMesh.position.y = baseEyebrowY + currentSmile * 0.042;
+        }
+        smileUniform.value = currentSmile;
+        // ─────────────────────────────────────────────────────────────────
 
         // ── Follow cursor with pupils ─────────────────────────────────────
         const isScrolled = window.scrollY >= 200;
