@@ -109,7 +109,7 @@ function createPupilTexture(): THREE.CanvasTexture {
 
 function applyPupilTexture(
   eyeMesh: THREE.Mesh,
-  pupilCenter: THREE.Vector3,
+  pupilCenterUniform: { value: THREE.Vector3 },
   pupilRadius: number,
   texture: THREE.CanvasTexture,
   id: string
@@ -122,7 +122,7 @@ function applyPupilTexture(
 
   const uniforms = {
     uPupilTex: { value: texture },
-    uPupilCenter: { value: pupilCenter },
+    uPupilCenter: pupilCenterUniform,
     uPupilRadius: { value: pupilRadius },
   };
 
@@ -207,6 +207,14 @@ const Scene = () => {
       let progress = setProgress((value) => setLoading(value));
       const { loadCharacter } = setCharacter(renderer, scene, camera);
 
+      // Base pupil positions on the eye sphere surfaces and dynamic uniforms
+      // Lowered Y to 1.285 so pupils are perfectly centered vertically in the eye opening
+      const basePupilL = new THREE.Vector3(0.165, 1.25, 0.885);
+      const basePupilR = new THREE.Vector3(-0.165, 1.25, 0.885);
+      const pupilUniformL = { value: basePupilL.clone() };
+      const pupilUniformR = { value: basePupilR.clone() };
+      const currentPupilOffset = { x: 0, y: 0 };
+
       loadCharacter().then((gltf) => {
         if (gltf) {
           const animations = setAnimations(gltf);
@@ -226,7 +234,7 @@ const Scene = () => {
           scene.add(character);
           (window as any).__THREE_CHARACTER__ = character;
           (window as any).__THREE_SCENE__ = scene;
-          console.log("[DEBUG] Character loaded. Children of HeadBone:", 
+          console.log("[DEBUG] Character loaded. Children of HeadBone:",
             character.getObjectByName("HeadBone")?.children.map((c: any) => ({ name: c.name, type: c.type, isMesh: !!c.isMesh }))
           );
           const allMeshes: any[] = [];
@@ -250,7 +258,7 @@ const Scene = () => {
                 } else {
                   applyPupilTexture(
                     child,
-                    new THREE.Vector3(0.170, 1.335, 0.895),
+                    pupilUniformL,
                     0.125,
                     pupilTexture,
                     "pupil_L"
@@ -270,7 +278,7 @@ const Scene = () => {
                 } else {
                   applyPupilTexture(
                     child,
-                    new THREE.Vector3(-0.170, 1.335, 0.895),
+                    pupilUniformR,
                     0.125,
                     pupilTexture,
                     "pupil_R"
@@ -345,6 +353,35 @@ const Scene = () => {
             THREE.MathUtils.lerp
           );
         }
+
+        // ── Follow cursor with pupils ─────────────────────────────────────
+        const isScrolled = window.scrollY >= 200;
+        const targetPupilX = isScrolled ? 0 : mouse.x * 0.035;
+        const targetPupilY = isScrolled ? 0 : mouse.y * 0.045;
+
+        currentPupilOffset.x = THREE.MathUtils.lerp(
+          currentPupilOffset.x,
+          targetPupilX,
+          0.1
+        );
+        currentPupilOffset.y = THREE.MathUtils.lerp(
+          currentPupilOffset.y,
+          targetPupilY,
+          0.1
+        );
+
+        pupilUniformL.value.set(
+          basePupilL.x + currentPupilOffset.x,
+          basePupilL.y + currentPupilOffset.y,
+          basePupilL.z
+        );
+        pupilUniformR.value.set(
+          basePupilR.x + currentPupilOffset.x,
+          basePupilR.y + currentPupilOffset.y,
+          basePupilR.z
+        );
+        // ─────────────────────────────────────────────────────────────────
+
         if (characterModel) {
           light.setPointLight(screenLight);
         }
