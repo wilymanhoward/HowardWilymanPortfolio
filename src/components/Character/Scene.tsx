@@ -112,6 +112,7 @@ function applyPupilTexture(
   pupilCenterUniform: { value: THREE.Vector3 },
   pupilRadius: number,
   texture: THREE.CanvasTexture,
+  blinkUniform: { value: number },
   id: string
 ) {
   const origMat = (
@@ -124,12 +125,14 @@ function applyPupilTexture(
     uPupilTex: { value: texture },
     uPupilCenter: pupilCenterUniform,
     uPupilRadius: { value: pupilRadius },
+    uBlink: blinkUniform,
   };
 
   mat.onBeforeCompile = (shader) => {
     shader.uniforms.uPupilTex = uniforms.uPupilTex;
     shader.uniforms.uPupilCenter = uniforms.uPupilCenter;
     shader.uniforms.uPupilRadius = uniforms.uPupilRadius;
+    shader.uniforms.uBlink = uniforms.uBlink;
 
     shader.vertexShader = shader.vertexShader.replace(
       "#include <common>",
@@ -148,7 +151,8 @@ function applyPupilTexture(
        varying vec3 vEyeLocalPos;
        uniform sampler2D uPupilTex;
        uniform vec3 uPupilCenter;
-       uniform float uPupilRadius;`
+       uniform float uPupilRadius;
+       uniform float uBlink;`
     );
 
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -158,6 +162,22 @@ function applyPupilTexture(
        if (eyeUV.x >= 0.0 && eyeUV.x <= 1.0 && eyeUV.y >= 0.0 && eyeUV.y <= 1.0 && vEyeLocalPos.z > (uPupilCenter.z - 0.20)) {
          vec4 texCol = texture2D(uPupilTex, eyeUV);
          diffuseColor.rgb = mix(diffuseColor.rgb, texCol.rgb, texCol.a);
+       }
+       if (uBlink > 0.001) {
+         float dx = (vEyeLocalPos.x - uPupilCenter.x) / 0.12;
+         float closeY = 1.22 - dx * dx * 0.012;
+         float upperLid = mix(1.55, closeY, uBlink);
+         float lowerLid = mix(1.05, closeY, uBlink);
+         float inUpperLid = smoothstep(upperLid - 0.006, upperLid + 0.006, vEyeLocalPos.y);
+         float inLowerLid = smoothstep(lowerLid + 0.006, lowerLid - 0.006, vEyeLocalPos.y);
+         float lidCover = clamp(inUpperLid + inLowerLid, 0.0, 1.0);
+         if (lidCover > 0.001) {
+           vec3 skinColor = vec3(0.58, 0.33, 0.20);
+           float dCrease = abs(vEyeLocalPos.y - closeY);
+           float crease = smoothstep(0.012, 0.002, dCrease) * smoothstep(0.7, 1.0, uBlink);
+           vec3 lidColor = mix(skinColor, vec3(0.35, 0.18, 0.10), crease * 0.65);
+           diffuseColor.rgb = mix(diffuseColor.rgb, lidColor, lidCover);
+         }
        }`
     );
   };
@@ -208,12 +228,19 @@ const Scene = () => {
       const { loadCharacter } = setCharacter(renderer, scene, camera);
 
       // Base pupil positions on the eye sphere surfaces and dynamic uniforms
-      // Lowered Y to 1.285 so pupils are perfectly centered vertically in the eye opening
+      // Lowered Y to 1.25 so pupils are centered vertically in the eye opening
       const basePupilL = new THREE.Vector3(0.165, 1.25, 0.885);
       const basePupilR = new THREE.Vector3(-0.165, 1.25, 0.885);
       const pupilUniformL = { value: basePupilL.clone() };
       const pupilUniformR = { value: basePupilR.clone() };
+      const blinkUniform = { value: 0.0 };
       const currentPupilOffset = { x: 0, y: 0 };
+
+      // Natural eye blinking timer state
+      let nextBlinkTime = performance.now() + 2500 + Math.random() * 2000;
+      let blinkStartTime = 0;
+      let isBlinking = false;
+      let isDoubleBlink = false;
 
       loadCharacter().then((gltf) => {
         if (gltf) {
@@ -245,6 +272,49 @@ const Scene = () => {
           });
           console.log("[DEBUG] All meshes in character:", allMeshes);
 
+          // ── CUSTOMIZE CHARACTER COLORS ──────────────────────────────────
+          // Black hair and eyebrows, rich dark navy blue shirt/sweater vest
+          character.traverse((child: any) => {
+            if (!child.isMesh) return;
+            const name = (child.name || "").toLowerCase();
+            const matName = (child.material?.name || "").toLowerCase();
+
+            // Black hair:
+            if (name.includes("hair") || matName.includes("hair")) {
+              if (child.material) {
+                child.material = child.material.clone();
+                child.material.color.set("#141416");
+                child.material.roughness = 0.55;
+              }
+            }
+
+            // Black eyebrows:
+            if (name.includes("eyebrow") || matName.includes("eyebrow")) {
+              if (child.material) {
+                child.material = child.material.clone();
+                child.material.color.set("#141416");
+                child.material.roughness = 0.65;
+              }
+            }
+
+            // Dark blue shirt and sweater vest:
+            if (
+              name.includes("shirt") ||
+              name.includes("sweater") ||
+              name.includes("vest") ||
+              matName.includes("shirt") ||
+              matName.includes("sweater") ||
+              matName.includes("vest")
+            ) {
+              if (child.material && !name.includes("button")) {
+                child.material = child.material.clone();
+                child.material.color.set("#131f37");
+                child.material.roughness = 0.65;
+              }
+            }
+          });
+          // ─────────────────────────────────────────────────────────────────
+
           // ── PUPIL SYSTEM: CANVAS TEXTURE ON EYEBALL MESHES ──────────────
           const pupilTexture = createPupilTexture();
 
@@ -261,6 +331,7 @@ const Scene = () => {
                     pupilUniformL,
                     0.125,
                     pupilTexture,
+                    blinkUniform,
                     "pupil_L"
                   );
                 }
@@ -281,6 +352,7 @@ const Scene = () => {
                     pupilUniformR,
                     0.125,
                     pupilTexture,
+                    blinkUniform,
                     "pupil_R"
                   );
                 }
@@ -380,6 +452,48 @@ const Scene = () => {
           basePupilR.y + currentPupilOffset.y,
           basePupilR.z
         );
+        // ─────────────────────────────────────────────────────────────────
+
+        // ── Periodic natural eye blinking ─────────────────────────────────
+        const now = performance.now();
+        if (!isBlinking && now >= nextBlinkTime) {
+          isBlinking = true;
+          blinkStartTime = now;
+          isDoubleBlink = Math.random() < 0.22; // ~22% chance of natural double-blink
+        }
+
+        let blinkProgress = 0;
+        if (isBlinking) {
+          const blinkDuration = 180; // 180ms snappy blink
+          const elapsed = now - blinkStartTime;
+
+          if (isDoubleBlink) {
+            const totalDuration = blinkDuration * 2 + 70;
+            if (elapsed < blinkDuration) {
+              const phase = elapsed / blinkDuration;
+              blinkProgress = Math.sin(phase * Math.PI);
+            } else if (elapsed < blinkDuration + 70) {
+              blinkProgress = 0;
+            } else if (elapsed < totalDuration) {
+              const phase = (elapsed - (blinkDuration + 70)) / blinkDuration;
+              blinkProgress = Math.sin(phase * Math.PI);
+            } else {
+              isBlinking = false;
+              blinkProgress = 0;
+              nextBlinkTime = now + 2500 + Math.random() * 3500;
+            }
+          } else {
+            if (elapsed < blinkDuration) {
+              const phase = elapsed / blinkDuration;
+              blinkProgress = Math.sin(phase * Math.PI);
+            } else {
+              isBlinking = false;
+              blinkProgress = 0;
+              nextBlinkTime = now + 2500 + Math.random() * 3500;
+            }
+          }
+        }
+        blinkUniform.value = blinkProgress;
         // ─────────────────────────────────────────────────────────────────
 
         if (characterModel) {
