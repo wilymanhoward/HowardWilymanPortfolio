@@ -1,0 +1,320 @@
+.landing-decorations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+/* ── RADIANT COSMIC AURORA GLOW BEHIND CHARACTER ─────── */
+.landing-character-aura {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.aura-core {
+  position: absolute;
+  top: 74%;
+  left: 50%;
+  width: 1150px;
+  height: 650px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse 65% 55% at 50% 55%,
+      rgba(79, 140, 255, 0.65) 0%,
+      rgba(56, 189, 248, 0.4) 28%,
+      rgba(129, 140, 248, 0.22) 50%,
+      rgba(168, 85, 247, 0.12) 68%,
+      transparent 82%);
+  transform: translate(-50%, -50%);
+  filter: blur(70px);
+  opacity: 0.9;
+  animation: auraCorePulse 6s ease-in-out infinite alternate;
+}
+
+.aura-beam-left {
+  position: absolute;
+  top: 68%;
+  left: calc(50% - 440px);
+  width: 540px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse 55% 42% at 50% 50%,
+      rgba(56, 189, 248, 0.45) 0%,
+      rgba(79, 140, 255, 0.25) 45%,
+      transparent 78%);
+  transform: rotate(-15deg);
+  filter: blur(60px);
+  opacity: 0.85;
+  animation: auraBeamLeft 7s ease-in-out infinite alternate;
+}
+
+.aura-beam-right {
+  position: absolute;
+  top: 68%;
+  right: calc(50% - 440px);
+  width: 540px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse 55% 42% at 50% 50%,
+      rgba(168, 85, 247, 0.45) 0%,
+      rgba(129, 140, 248, 0.25) 45%,
+      transparent 78%);
+  transform: rotate(15deg);
+  filter: blur(60px);
+  opacity: 0.85;
+  animation: auraBeamRight 7s ease-in-out 1s infinite alternate;
+}
+
+@keyframes auraCorePulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1.04);
+    opacity: 0.98;
+  }
+}
+
+@keyframes auraBeamLeft {
+  0% {
+    transform: rotate(-24deg) scale(0.95);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: rotate(-24deg) scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes auraBeamRight {
+  0% {
+    transform: rotate(24deg) scale(0.95);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: rotate(24deg) scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+/* ── GAMEPAD / JOYSTICK SILHOUETTE (LEFT SIDE) ───────── */
+.landing-deco-gamepad {
+  position: absolute;
+  left: calc(50% - 490px);
+  bottom: clamp(60px, 12vh, 125px);
+  width: 350px;
+  transform: rotate(-11deg);
+  opacity: 0.52;
+  filter: drop-shadow(0 0 16px rgba(79, 140, 255, 0.35));
+  transition: opacity 0.5s ease;
+  user-select: none;
+}
+
+.deco-gamepad-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── CODE SNAPSHOT CARD SILHOUETTE (RIGHT SIDE) ───────── */
+.landing-deco-code {
+  position: absolute;
+  right: calc(50% - 490px);
+  bottom: clamp(50px, 11vh, 115px);
+  width: 360px;
+  transform: rotate(8deg);
+  opacity: 0.56;
+  filter: drop-shadow(0 0 20px rgba(79, 140, 255, 0.22));
+  transition: opacity 0.5s ease;
+  user-select: none;
+}
+
+.deco-code-window {
+  background: rgba(11, 16, 30, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(79, 140, 255, 0.22);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(130, 180, 255, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.deco-code-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(15, 23, 44, 0.45);
+  border-bottom: 1px solid rgba(79, 140, 255, 0.14);
+}
+
+.deco-code-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.deco-code-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-close {
+  background: rgba(239, 68, 68, 0.75);
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+}
+
+.dot-min {
+  background: rgba(234, 179, 8, 0.75);
+  box-shadow: 0 0 6px rgba(234, 179, 8, 0.4);
+}
+
+.dot-max {
+  background: rgba(34, 197, 94, 0.75);
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+}
+
+.deco-code-title {
+  font-family: Consolas, "JetBrains Mono", Menlo, Monaco, "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: rgba(130, 180, 255, 0.65);
+  margin-left: auto;
+}
+
+.deco-code-content {
+  padding: 10px 14px;
+}
+
+.deco-code-content pre {
+  margin: 0;
+  font-family: Consolas, "JetBrains Mono", Menlo, Monaco, "Courier New", monospace;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: rgba(220, 232, 255, 0.78);
+  overflow: hidden;
+}
+
+.deco-code-content code {
+  font-family: inherit;
+}
+
+.code-kw {
+  color: #82b4ff;
+  font-weight: 500;
+}
+
+.code-type {
+  color: #bae6fd;
+}
+
+.code-func {
+  color: #38bdf8;
+}
+
+.code-str {
+  color: #7dd3fc;
+}
+
+.code-num {
+  color: #fde047;
+}
+
+.code-attr {
+  color: #c084fc;
+  font-style: italic;
+}
+
+/* ── RESPONSIVE SCALING ───────────────────────────────── */
+@media screen and (min-width: 1400px) {
+  .landing-deco-gamepad {
+    left: calc(50% - 530px);
+    width: 380px;
+    bottom: clamp(70px, 13vh, 135px);
+  }
+
+  .landing-deco-code {
+    right: calc(50% - 530px);
+    width: 390px;
+    bottom: clamp(60px, 12vh, 125px);
+  }
+
+  .deco-code-content pre {
+    font-size: 12px;
+  }
+}
+
+@media screen and (min-width: 1650px) {
+  .landing-deco-gamepad {
+    left: calc(50% - 580px);
+    width: 410px;
+    bottom: clamp(80px, 14vh, 150px);
+  }
+
+  .landing-deco-code {
+    right: calc(50% - 580px);
+    width: 420px;
+    bottom: clamp(70px, 13vh, 140px);
+  }
+
+  .deco-code-content pre {
+    font-size: 12.5px;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  .landing-deco-gamepad {
+    left: calc(50% - 440px);
+    width: 310px;
+    bottom: 55px;
+  }
+
+  .landing-deco-code {
+    right: calc(50% - 440px);
+    width: 320px;
+    bottom: 45px;
+  }
+
+  .deco-code-content pre {
+    font-size: 10.5px;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .landing-deco-gamepad {
+    left: calc(50% - 390px);
+    width: 270px;
+    bottom: 45px;
+  }
+
+  .landing-deco-code {
+    right: calc(50% - 390px);
+    width: 280px;
+    bottom: 40px;
+  }
+
+  .deco-code-content pre {
+    font-size: 9.5px;
+  }
+}
+
+/* Hide on mobile / tablet to prevent crowding */
+@media screen and (max-width: 1024px) {
+  .landing-decorations {
+    display: none !important;
+  }
+}

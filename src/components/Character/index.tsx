@@ -33,21 +33,12 @@ const MobileCharacter = () => {
       clearInterval(interval);
     };
 
-    // Animate the soft pink ambient rim glow behind the character
-    gsap.to(".character-rim", {
-      y: "55%",
-      opacity: 1,
-      delay: 0.2,
-      duration: 1.5,
-    });
-
     return () => clearInterval(interval);
   }, [setLoading]);
 
   return (
     <div className="character-container">
       <div className="character-model">
-        <div className="character-rim"></div>
         <img
           src="/images/character_mobile.webp"
           alt="Howard Wilyman"

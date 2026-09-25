@@ -1,24 +1,19 @@
 import { useEffect, useState } from "react";
 import "./styles/Loading.css";
 import { useLoading } from "../context/LoadingProvider";
-
-import Marquee from "react-fast-marquee";
+import LoadingLines from "@/components/ui/loading-lines";
 
 const Loading = ({ percent }: { percent: number }) => {
   const { setIsLoading } = useLoading();
-  const [loaded, setLoaded] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [clicked, setClicked] = useState(false);
 
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 1024;
 
-  if (percent >= 100) {
+  if (percent >= 100 && !isLoaded) {
     setTimeout(() => {
-      setLoaded(true);
-      setTimeout(() => {
-        setIsLoaded(true);
-      }, isMobile ? 400 : 1000);
-    }, isMobile ? 250 : 600);
+      setIsLoaded(true);
+    }, isMobile ? 350 : 700);
   }
 
   useEffect(() => {
@@ -30,65 +25,34 @@ const Loading = ({ percent }: { percent: number }) => {
             module.initialFX();
           }
           setIsLoading(false);
-        }, isMobile ? 450 : 900);
+        }, isMobile ? 500 : 800);
       }
     });
   }, [isLoaded, isMobile]);
 
-  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
-    const { currentTarget: target } = e;
-    const rect = target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    target.style.setProperty("--mouse-x", `${x}px`);
-    target.style.setProperty("--mouse-y", `${y}px`);
-  }
-
   return (
-    <>
-      <div className="loading-header">
+    <div
+      className={`loading-screen-wrap ${clicked ? "loading-screen-exit" : ""}`}
+      aria-label="Loading"
+      aria-busy={percent < 100}
+    >
+      {/* Top Header Logo */}
+      <header className="loading-screen-header">
         <a href="/#" className="loader-title" data-cursor="disable" aria-label="Howard Wilyman">
           <img src="/images/logo.png" alt="Howard Wilyman" className="loader-logo" />
         </a>
-        <div className={`loaderGame ${clicked && "loader-out"}`}>
-          <div className="loaderGame-container">
-            <div className="loaderGame-in">
-              {[...Array(27)].map((_, index) => (
-                <div className="loaderGame-line" key={index}></div>
-              ))}
-            </div>
-            <div className="loaderGame-ball"></div>
-          </div>
+      </header>
+
+      {/* Main Center Area with LoadingLines component */}
+      <main className="loading-screen-center">
+        <div className="loading-lines-container">
+          <LoadingLines />
         </div>
-      </div>
-      <div className="loading-screen">
-        <div className="loading-marquee">
-          <Marquee>
-            <span> A Creative Developer</span> <span>A Creative Designer</span>
-            <span> A Creative Developer</span> <span>A Creative Designer</span>
-          </Marquee>
-        </div>
-        <div
-          className={`loading-wrap ${clicked && "loading-clicked"}`}
-          onMouseMove={(e) => handleMouseMove(e)}
-        >
-          <div className="loading-hover"></div>
-          <div className={`loading-button ${loaded && "loading-complete"}`}>
-            <div className="loading-container">
-              <div className="loading-content">
-                <div className="loading-content-in">
-                  Loading <span>{percent}%</span>
-                </div>
-              </div>
-              <div className="loading-box"></div>
-            </div>
-            <div className="loading-content2">
-              <span>Welcome</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+      </main>
+
+      {/* Ambient background glow */}
+      <div className="loading-screen-ambient" aria-hidden="true" />
+    </div>
   );
 };
 
