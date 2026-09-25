@@ -324,7 +324,7 @@ const Scene = () => {
       let currentSmile = 0;
 
       // Natural eye blinking timer state
-      let nextBlinkTime = performance.now() + 2500 + Math.random() * 2000;
+      let nextBlinkTime = performance.now() + 1000 + Math.random() * 1200;
       let blinkStartTime = 0;
       let isBlinking = false;
       let isDoubleBlink = false;
@@ -639,12 +639,12 @@ const Scene = () => {
         if (!isBlinking && now >= nextBlinkTime) {
           isBlinking = true;
           blinkStartTime = now;
-          isDoubleBlink = Math.random() < 0.22; // ~22% chance of natural double-blink
+          isDoubleBlink = Math.random() < 0.28; // natural double-blink chance
         }
 
         let blinkProgress = 0;
         if (isBlinking) {
-          const blinkDuration = 180; // 180ms snappy blink
+          const blinkDuration = 160; // 160ms snappy blink
           const elapsed = now - blinkStartTime;
 
           if (isDoubleBlink) {
@@ -660,7 +660,7 @@ const Scene = () => {
             } else {
               isBlinking = false;
               blinkProgress = 0;
-              nextBlinkTime = now + 2500 + Math.random() * 3500;
+              nextBlinkTime = now + 1200 + Math.random() * 1800;
             }
           } else {
             if (elapsed < blinkDuration) {
@@ -669,7 +669,7 @@ const Scene = () => {
             } else {
               isBlinking = false;
               blinkProgress = 0;
-              nextBlinkTime = now + 2500 + Math.random() * 3500;
+              nextBlinkTime = now + 1200 + Math.random() * 1800;
             }
           }
         }

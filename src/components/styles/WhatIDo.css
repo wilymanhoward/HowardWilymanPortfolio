@@ -34,7 +34,7 @@
 }
 .what-box-in {
   flex-direction: column;
-  height: 500px;
+  height: 530px;
   margin-left: 200px;
   position: relative;
   display: none;
@@ -46,21 +46,21 @@
   transition: 0.5s;
   /* border: 0.5px dashed rgba(255, 255, 255, 0.3); */
   position: relative;
-  padding: 50px;
+  padding: 35px 45px;
   box-sizing: border-box;
 }
 
 .what-noTouch:hover,
 .what-content-active {
-  min-height: 67%;
-  padding: 40px 50px;
+  min-height: 70%;
+  padding: 28px 45px;
 }
 
 .what-noTouch:hover ~ .what-content,
 .what-box-in:hover .what-noTouch:not(:hover),
 .what-content.what-sibling {
-  min-height: 33%;
-  padding: 10px 50px;
+  min-height: 30%;
+  padding: 10px 45px;
 }
 .what-content h3 {
   font-size: 35px;
@@ -68,10 +68,12 @@
   margin: 0;
 }
 .what-content p {
-  font-size: 14px;
-  line-height: 18px;
-  font-weight: 200;
-  letter-spacing: 0.7px;
+  font-size: 13.5px;
+  line-height: 19px;
+  font-weight: 300;
+  letter-spacing: 0.4px;
+  color: #d1cdd4;
+  margin: 6px 0 10px 0;
 }
 .what-content h4 {
   font-weight: 300;
@@ -249,30 +251,34 @@
     margin-right: 20%;
   }
   .what-box-in {
-    height: 400px;
+    height: 480px;
   }
   .what-content h3 {
     font-size: 28px;
   }
   .what-content {
-    padding: 30px;
+    padding: 25px;
     width: 400px;
   }
   .what-content p {
-    font-size: 13px;
+    font-size: 12.5px;
+    line-height: 17px;
+    margin: 4px 0 8px 0;
   }
   .what-noTouch:hover,
   .what-content-active {
-    padding: 20px 30px;
+    min-height: 72%;
+    padding: 18px 25px;
   }
 
   .what-noTouch:hover ~ .what-content,
   .what-box-in:hover .what-noTouch:not(:hover),
   .what-content.what-sibling {
-    padding: 10px 30px;
+    min-height: 28%;
+    padding: 8px 25px;
   }
   .what-tags {
-    font-size: 12px;
+    font-size: 11.5px;
   }
 }
 @media only screen and (max-width: 1400px) {
@@ -355,7 +361,8 @@
     padding: 30px;
   }
   .what-content p {
-    font-size: 11px;
+    font-size: 12px;
+    line-height: 17px;
   }
   .what-noTouch:hover,
   .what-content-active {

@@ -46,7 +46,10 @@ export function setCharTimeline(
             child.material.opacity = 0;
             if (child.material.name === "Material.027") {
               monitor = child;
-              child.material.color.set("#FFFFFF");
+              child.material.color.set("#26282e");
+              child.material.roughness = 0.5;
+              child.material.metalness = 0.15;
+              child.material.envMapIntensity = 0.4;
             }
           }
         });
@@ -54,12 +57,27 @@ export function setCharTimeline(
         object.material.transparent = true;
         object.material.opacity = 0;
         monitor = object;
+        if (Array.isArray(object.material)) {
+          object.material.forEach((m: any) => {
+            if (m.name === "Material.027") {
+              m.color.set("#26282e");
+              m.roughness = 0.5;
+              m.metalness = 0.15;
+              m.envMapIntensity = 0.4;
+            }
+          });
+        } else if (object.material.name === "Material.027") {
+          object.material.color.set("#26282e");
+          object.material.roughness = 0.5;
+          object.material.metalness = 0.15;
+          object.material.envMapIntensity = 0.4;
+        }
       }
     }
     if (object.name === "screenlight" && object.material) {
       object.material.transparent = true;
       object.material.opacity = 0;
-      object.material.emissive?.set("#C8BFFF");
+      object.material.emissive?.set("#4f8cff");
       gsap.timeline({ repeat: -1, repeatRefresh: true }).to(object.material, {
         emissiveIntensity: () => intensity * 8,
         duration: () => Math.random() * 0.6,
