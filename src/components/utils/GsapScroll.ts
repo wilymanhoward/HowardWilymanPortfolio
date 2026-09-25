@@ -143,16 +143,14 @@ export function setCharTimeline(
         .to(character.rotation, { x: -0.04, duration: 2, delay: 1 }, 0);
     }
   } else {
-    if (character) {
-      const tM2 = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".what-box-in",
-          start: "top 70%",
-          end: "bottom top",
-        },
-      });
-      tM2.to(".what-box-in", { display: "flex", duration: 0.1, delay: 0 }, 0);
-    }
+    const tM2 = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".what-box-in",
+        start: "top 70%",
+        end: "bottom top",
+      },
+    });
+    tM2.to(".what-box-in", { display: "flex", duration: 0.1, delay: 0 }, 0);
   }
 }
 

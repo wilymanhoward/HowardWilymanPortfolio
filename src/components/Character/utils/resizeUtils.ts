@@ -12,6 +12,10 @@ export default function handleResize(
   let canvas3d = canvasDiv.current.getBoundingClientRect();
   const width = canvas3d.width;
   const height = canvas3d.height;
+  const isMobile = window.innerWidth <= 1024;
+  renderer.setPixelRatio(
+    isMobile ? Math.min(window.devicePixelRatio, 1.5) : window.devicePixelRatio
+  );
   renderer.setSize(width, height);
   camera.aspect = width / height;
   camera.updateProjectionMatrix();

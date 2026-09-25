@@ -11,6 +11,7 @@ const setCharacter = (
   const loader = new GLTFLoader();
   const dracoLoader = new DRACOLoader();
   dracoLoader.setDecoderPath("/draco/");
+  dracoLoader.preload();
   loader.setDRACOLoader(dracoLoader);
 
   const loadCharacter = () => {
@@ -27,12 +28,35 @@ const setCharacter = (
           blobUrl,
           async (gltf) => {
             character = gltf.scene;
+            const isMobile = window.innerWidth <= 1024;
+            if (isMobile) {
+              const hiddenOnMobilePrefixes = [
+                "key",
+                "plane",
+                "cube",
+                "ground",
+                "rex_shoes",
+                "rex_shorts",
+                "rex_socks",
+                "rex_belt",
+                "rex_rolex",
+              ];
+              character.traverse((child: any) => {
+                if (child.isMesh) {
+                  const nameLower = (child.name || "").toLowerCase();
+                  if (hiddenOnMobilePrefixes.some((p) => nameLower.startsWith(p) || nameLower.includes(p))) {
+                    if (!nameLower.includes("screenlight")) {
+                      child.visible = false;
+                      child.matrixAutoUpdate = false;
+                    }
+                  }
+                }
+              });
+            }
             await renderer.compileAsync(character, camera, scene);
             character.traverse((child: any) => {
               if (child.isMesh) {
                 const mesh = child as THREE.Mesh;
-                child.castShadow = true;
-                child.receiveShadow = true;
                 mesh.frustumCulled = true;
               }
             });

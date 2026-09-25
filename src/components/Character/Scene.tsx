@@ -260,25 +260,33 @@ function applyPupilTexture(
 const Scene = () => {
   const canvasDiv = useRef<HTMLDivElement | null>(null);
   const hoverDivRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef(new THREE.Scene());
   const { setLoading } = useLoading();
 
   const [character, setChar] = useState<THREE.Object3D | null>(null);
   useEffect(() => {
     if (canvasDiv.current) {
+      let isDisposed = false;
+      let animationFrameId: number;
       let rect = canvasDiv.current.getBoundingClientRect();
       let container = { width: rect.width, height: rect.height };
       const aspect = container.width / container.height;
-      const scene = sceneRef.current;
+      const scene = new THREE.Scene();
+
+      const isMobile = window.innerWidth <= 1024;
 
       const renderer = new THREE.WebGLRenderer({
         alpha: true,
-        antialias: true,
+        antialias: !isMobile,
+        powerPreference: isMobile ? "high-performance" : "default",
+        precision: isMobile ? "mediump" : "highp",
       });
       renderer.setSize(container.width, container.height);
-      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setPixelRatio(
+        isMobile ? Math.min(window.devicePixelRatio, 1.5) : window.devicePixelRatio
+      );
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1;
+      canvasDiv.current.querySelectorAll("canvas").forEach((c) => c.remove());
       canvasDiv.current.appendChild(renderer.domElement);
 
       const camera = new THREE.PerspectiveCamera(14.5, aspect, 0.1, 1000);
@@ -322,6 +330,9 @@ const Scene = () => {
       let isDoubleBlink = false;
 
       loadCharacter().then((gltf) => {
+        if (isDisposed) {
+          return;
+        }
         if (gltf) {
           const animations = setAnimations(gltf);
           hoverDivRef.current && animations.hover(gltf, hoverDivRef.current);
@@ -336,6 +347,11 @@ const Scene = () => {
             headBone.position.z -= 0.2;
             headBone.position.y -= 0.15;
           }
+          const existingChar = scene.getObjectByName("CharacterRoot");
+          if (existingChar) {
+            scene.remove(existingChar);
+          }
+          character.name = "CharacterRoot";
           setChar(character);
           scene.add(character);
           (window as any).__THREE_CHARACTER__ = character;
@@ -474,11 +490,14 @@ const Scene = () => {
             setTimeout(() => {
               light.turnOnLights();
               animations.startIntro();
-            }, 2500);
+            }, isMobile ? 1100 : 2500);
           });
-          window.addEventListener("resize", () =>
-            handleResize(renderer, camera, canvasDiv, character)
-          );
+          const onResize = () => {
+            if (character) {
+              handleResize(renderer, camera, canvasDiv, character);
+            }
+          };
+          window.addEventListener("resize", onResize);
         }
       });
 
@@ -488,30 +507,44 @@ const Scene = () => {
       const onMouseMove = (event: MouseEvent) => {
         handleMouseMove(event, (x, y) => (mouse = { x, y }));
       };
-      let debounce: number | undefined;
-      const onTouchStart = (event: TouchEvent) => {
-        const element = event.target as HTMLElement;
-        debounce = setTimeout(() => {
-          element?.addEventListener("touchmove", (e: TouchEvent) =>
-            handleTouchMove(e, (x, y) => (mouse = { x, y }))
-          );
-        }, 200);
+
+      const onMouseMoveListener = (event: MouseEvent) => {
+        onMouseMove(event);
+        const target = event.target as HTMLElement | null;
+        if (target?.closest("#social, .social-icons, .icons-section a, .icons-section span, a[href*='github'], a[href*='linkedin'], a[href*='instagram'], .contact-social")) {
+          isSmiling = true;
+        }
+      };
+      document.addEventListener("mousemove", onMouseMoveListener);
+
+      const onTouchMoveListener = (e: TouchEvent) => {
+        handleTouchMove(e, (x, y) => (mouse = { x, y }));
       };
 
-      const onTouchEnd = () => {
+      const onTouchStartListener = (event: TouchEvent) => {
+        window.addEventListener("touchmove", onTouchMoveListener, { passive: true });
+        if (event.touches.length > 0) {
+          const mouseX = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+          const mouseY = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+          mouse = { x: mouseX, y: mouseY };
+        }
+      };
+
+      const onTouchEndListener = () => {
+        window.removeEventListener("touchmove", onTouchMoveListener);
         handleTouchEnd((x, y, interpolationX, interpolationY) => {
           mouse = { x, y };
           interpolation = { x: interpolationX, y: interpolationY };
         });
       };
 
-      document.addEventListener("mousemove", (event) => {
-        onMouseMove(event);
-        const target = event.target as HTMLElement | null;
-        if (target?.closest("#social, .social-icons, .icons-section a, .icons-section span, a[href*='github'], a[href*='linkedin'], a[href*='instagram'], .contact-social")) {
-          isSmiling = true;
-        }
-      });
+      const landingDiv = document.getElementById("landingDiv");
+      if (landingDiv) {
+        landingDiv.addEventListener("touchstart", onTouchStartListener, { passive: true });
+        landingDiv.addEventListener("touchend", onTouchEndListener);
+      }
+      window.addEventListener("touchstart", onTouchStartListener, { passive: true });
+      window.addEventListener("touchend", onTouchEndListener);
 
       // ── Social Icons Hover Detection (Triggers Smiling) ────────────────
       const onSocialEnter = () => {
@@ -544,14 +577,9 @@ const Scene = () => {
       document.addEventListener("mouseout", onGlobalMouseOut);
       // ───────────────────────────────────────────────────────────────────
 
-      const landingDiv = document.getElementById("landingDiv");
-      if (landingDiv) {
-        landingDiv.addEventListener("touchstart", onTouchStart);
-        landingDiv.addEventListener("touchend", onTouchEnd);
-      }
-
       const animate = () => {
-        requestAnimationFrame(animate);
+        if (isDisposed) return;
+        animationFrameId = requestAnimationFrame(animate);
         if (headBone) {
           handleHeadRotation(
             headBone,
@@ -656,23 +684,52 @@ const Scene = () => {
         if (mixer) {
           mixer.update(delta);
         }
+        if (isMobile && !isCanvasVisible) {
+          return;
+        }
         renderer.render(scene, camera);
       };
+
+      let isCanvasVisible = true;
+      let observer: IntersectionObserver | null = null;
+      if (isMobile && typeof IntersectionObserver !== "undefined" && canvasDiv.current) {
+        observer = new IntersectionObserver(
+          (entries) => {
+            if (entries[0]) {
+              isCanvasVisible = entries[0].isIntersecting;
+            }
+          },
+          { threshold: 0.01 }
+        );
+        observer.observe(canvasDiv.current);
+      }
+
       animate();
+
       return () => {
-        clearTimeout(debounce);
+        isDisposed = true;
+        cancelAnimationFrame(animationFrameId);
+        if (observer) {
+          observer.disconnect();
+        }
+        document.removeEventListener("mousemove", onMouseMoveListener);
+        document.removeEventListener("mouseover", onGlobalMouseOver);
+        document.removeEventListener("mouseout", onGlobalMouseOut);
+        window.removeEventListener("touchstart", onTouchStartListener);
+        window.removeEventListener("touchend", onTouchEndListener);
+        window.removeEventListener("touchmove", onTouchMoveListener);
+        if (landingDiv) {
+          landingDiv.removeEventListener("touchstart", onTouchStartListener);
+          landingDiv.removeEventListener("touchend", onTouchEndListener);
+        }
+        if (socialContainer) {
+          socialContainer.removeEventListener("mouseenter", onSocialEnter);
+          socialContainer.removeEventListener("mouseleave", onSocialLeave);
+        }
         scene.clear();
         renderer.dispose();
-        window.removeEventListener("resize", () =>
-          handleResize(renderer, camera, canvasDiv, character!)
-        );
         if (canvasDiv.current) {
-          canvasDiv.current.removeChild(renderer.domElement);
-        }
-        if (landingDiv) {
-          document.removeEventListener("mousemove", onMouseMove);
-          landingDiv.removeEventListener("touchstart", onTouchStart);
-          landingDiv.removeEventListener("touchend", onTouchEnd);
+          canvasDiv.current.querySelectorAll("canvas").forEach((c) => c.remove());
         }
       };
     }

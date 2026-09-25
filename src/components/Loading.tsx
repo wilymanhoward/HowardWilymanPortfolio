@@ -10,13 +10,15 @@ const Loading = ({ percent }: { percent: number }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [clicked, setClicked] = useState(false);
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 1024;
+
   if (percent >= 100) {
     setTimeout(() => {
       setLoaded(true);
       setTimeout(() => {
         setIsLoaded(true);
-      }, 1000);
-    }, 600);
+      }, isMobile ? 400 : 1000);
+    }, isMobile ? 250 : 600);
   }
 
   useEffect(() => {
@@ -28,10 +30,10 @@ const Loading = ({ percent }: { percent: number }) => {
             module.initialFX();
           }
           setIsLoading(false);
-        }, 900);
+        }, isMobile ? 450 : 900);
       }
     });
-  }, [isLoaded]);
+  }, [isLoaded, isMobile]);
 
   function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
     const { currentTarget: target } = e;
@@ -93,24 +95,25 @@ const Loading = ({ percent }: { percent: number }) => {
 export default Loading;
 
 export const setProgress = (setLoading: (value: number) => void) => {
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 1024;
   let percent: number = 0;
 
   let interval = setInterval(() => {
     if (percent <= 50) {
-      let rand = Math.round(Math.random() * 5);
+      let rand = Math.round(Math.random() * (isMobile ? 8 : 5));
       percent = percent + rand;
       setLoading(percent);
     } else {
       clearInterval(interval);
       interval = setInterval(() => {
-        percent = percent + Math.round(Math.random());
+        percent = percent + Math.round(Math.random() * (isMobile ? 3 : 1));
         setLoading(percent);
         if (percent > 91) {
           clearInterval(interval);
         }
-      }, 2000);
+      }, isMobile ? 300 : 2000);
     }
-  }, 100);
+  }, isMobile ? 60 : 100);
 
   function clear() {
     clearInterval(interval);

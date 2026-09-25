@@ -30,6 +30,13 @@
   letter-spacing: 1px;
 }
 
+@media only screen and (max-width: 600px) {
+  .about-me p {
+    font-size: 20px;
+    line-height: 28px;
+  }
+}
+
 @media only screen and (min-width: 600px) {
   .about-section {
     justify-content: center;
@@ -48,7 +55,7 @@
 @media only screen and (min-width: 1025px) {
   .about-section {
     width: var(--cWidth);
-    justify-content: right;
+    justify-content: flex-end;
     max-width: 1920px;
     height: var(--vh);
     padding: 0px;
@@ -57,10 +64,14 @@
   .about-me {
     padding: 0px;
     width: 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+    min-width: 480px;
   }
   .about-me p {
     font-size: 1.9vw;
-    line-height: 2.3vw;
+    line-height: 2.5vw;
+    width: 100%;
   }
 }
 @media only screen and (min-width: 1950px) {

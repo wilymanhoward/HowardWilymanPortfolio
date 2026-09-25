@@ -23,11 +23,16 @@ const MainContainer = ({ children }: PropsWithChildren) => {
       setIsDesktopView(window.innerWidth > 1024);
     };
     resizeHandler();
+    if (typeof document !== "undefined" && document.fonts) {
+      document.fonts.ready.then(() => {
+        setSplitText();
+      });
+    }
     window.addEventListener("resize", resizeHandler);
     return () => {
       window.removeEventListener("resize", resizeHandler);
     };
-  }, [isDesktopView]);
+  }, []);
 
   return (
     <div className="container-main">

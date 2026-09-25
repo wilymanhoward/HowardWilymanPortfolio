@@ -6,9 +6,11 @@ const About = () => {
       <div className="about-me">
         <h3 className="title">About Me</h3>
         <p className="para">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic quis
-          dolores numquam iusto Ratione earum ducimus autem id iure pariatur
-          dolorum quae maiores.
+          I’m a Digital Media Technology student focused on gameplay
+          programming, game design, and interactive software development.
+          Combining core mechanics implementation in Unity with 3D workflows in
+          Maya and modern web tech, I love building engaging, responsive systems
+          from the code up.
         </p>
       </div>
     </div>
