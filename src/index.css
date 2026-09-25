@@ -1,11 +1,15 @@
-@import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap");
 @import url("https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Clash Display", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+}
 
 :root {
   --font-family: "Clash Display", sans-serif;
-  font-family: var(--font-family);
+  font-family: "Clash Display", sans-serif;
 
   font-optical-sizing: auto;
   font-style: normal;
@@ -27,13 +31,28 @@
   --vh: 100vh;
   --vh: 100svh;
 }
+
+*,
+*::before,
+*::after {
+  font-family: inherit;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: "Clash Display", sans-serif;
+}
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-family);
+  font-family: "Clash Display", sans-serif;
 }
 body {
   overflow: hidden;
