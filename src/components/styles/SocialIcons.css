@@ -32,13 +32,17 @@
   display: flex;
 }
 .social-icons a {
-  --siLeft: 50%;
-  --siTop: 50%;
+  --siLeft: 25px;
+  --siTop: 25px;
   position: absolute;
-  left: var(--siLeft, 50%);
-  top: var(--siTop, 50%);
+  left: var(--siLeft, 25px);
+  top: var(--siTop, 25px);
   transform: translate(-50%, -50%);
   display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   font-size: 23px;
   will-change: left, top;
   transition: transform 0.3s ease-out;

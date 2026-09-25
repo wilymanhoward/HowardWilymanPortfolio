@@ -194,9 +194,26 @@
   color: var(--backgroundColor);
 }
 .loader-title {
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.loader-logo {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  filter: invert(1);
+  display: block;
+}
+@media only screen and (min-width: 500px) {
+  .loader-logo {
+    height: 34px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .loader-logo {
+    height: 42px;
+  }
 }
 @keyframes blink {
   0% {

@@ -42,8 +42,12 @@ const Navbar = () => {
   return (
     <>
       <div className="header">
-        <a href="/#" className="navbar-title" data-cursor="disable">
-          Howard Wilyman
+        <a href="/#" className="navbar-title" data-cursor="disable" aria-label="Howard Wilyman">
+          <img
+            src="/images/logo.png"
+            alt="Howard Wilyman"
+            className="navbar-logo"
+          />
         </a>
         <a
           href="mailto:wilymanhoward@gmail.com"

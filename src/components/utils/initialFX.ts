@@ -12,15 +12,24 @@ export function initialFX() {
     delay: 1,
   });
 
-  var landingText = new SplitText(
-    [".landing-info h3", ".landing-intro h2", ".landing-intro h1"],
+  const introText = new SplitText(
+    [".landing-intro h2", ".landing-intro h1"],
     {
       type: "chars,lines",
       linesClass: "split-line",
     }
   );
+  const prefCreative = new SplitText(".landing-prefix-1", {
+    type: "chars,lines",
+    linesClass: "split-line",
+  });
+  const prefInteractive = new SplitText(".landing-prefix-2", {
+    type: "chars,lines",
+    linesClass: "split-line",
+  });
+
   gsap.fromTo(
-    landingText.chars,
+    [...introText.chars, ...prefCreative.chars],
     { opacity: 0, y: 80, filter: "blur(5px)" },
     {
       opacity: 1,
@@ -33,12 +42,14 @@ export function initialFX() {
     }
   );
 
-  let TextProps = { type: "chars,lines", linesClass: "split-h2" };
+  const TextProps = { type: "chars,lines", linesClass: "split-h2" };
 
-  var landingText2 = new SplitText(".landing-h2-info", TextProps);
-  var landingText4 = new SplitText(".landing-h2-1", TextProps);
+  // Phrase 1: Gameplay Programmer
+  const top1 = new SplitText(".landing-h2-1", TextProps);
+  const bot1 = new SplitText(".landing-h2-info", TextProps);
+
   gsap.fromTo(
-    [...landingText2.chars, ...landingText4.chars],
+    [...top1.chars, ...bot1.chars],
     { opacity: 0, y: 80, filter: "blur(5px)" },
     {
       opacity: 1,
@@ -62,31 +73,73 @@ export function initialFX() {
     }
   );
 
-  var landingText3 = new SplitText(".landing-h2-info-1", TextProps);
-  var landingText5 = new SplitText(".landing-h2-2", TextProps);
+  // Phrase 2: Technical Designer
+  const top2 = new SplitText(".landing-h2-2", TextProps);
+  const bot2 = new SplitText(".landing-h2-info-2", TextProps);
 
-  LoopText(landingText4, landingText2, landingText5, landingText3);
+  // Phrase 3: Software Developer
+  const top3 = new SplitText(".landing-h2-3", TextProps);
+  const bot3 = new SplitText(".landing-h2-info-3", TextProps);
+
+  // Phrase 4: Technologist
+  const top4 = new SplitText(".landing-h2-4", TextProps);
+  const bot4 = new SplitText(".landing-h2-info-4", TextProps);
+
+  LoopText(
+    prefCreative,
+    prefInteractive,
+    top1,
+    bot1,
+    top2,
+    bot2,
+    top3,
+    bot3,
+    top4,
+    bot4
+  );
 }
 
 function LoopText(
+  pref1: SplitText,
+  pref2: SplitText,
   top1: SplitText,
   bot1: SplitText,
   top2: SplitText,
-  bot2: SplitText
+  bot2: SplitText,
+  top3: SplitText,
+  bot3: SplitText,
+  top4: SplitText,
+  bot4: SplitText
 ) {
   const tl = gsap.timeline({ repeat: -1 });
   const displayDuration = 3.0; // Rapidly changing every 3 seconds
   const animDuration = 0.5;   // Crisp, fast animation
   const stagger = 0.02;
 
-  // Ensure phrase 2 starts hidden below
-  gsap.set([...top2.chars, ...bot2.chars], {
-    opacity: 0,
-    y: 80,
-    filter: "blur(4px)",
-  });
+  // Ensure phrases 2, 3, 4 and prefix 2 start hidden
+  gsap.set(
+    [
+      ...pref2.chars,
+      ...top2.chars,
+      ...bot2.chars,
+      ...top3.chars,
+      ...bot3.chars,
+      ...top4.chars,
+      ...bot4.chars,
+    ],
+    {
+      opacity: 0,
+      y: 80,
+      filter: "blur(4px)",
+    }
+  );
 
-  // Phase 1 (at 3.0s): "Game Designer" transitions OUT, "Software Developer" transitions IN
+  const t1 = displayDuration;
+  const t2 = t1 + animDuration + displayDuration;
+  const t3 = t2 + animDuration + displayDuration;
+  const t4 = t3 + animDuration + displayDuration;
+
+  // Phase 1 (at 3.0s): Phrase 1 (Gameplay Programmer) -> Phrase 2 (Technical Designer)
   tl.to(
     [...top1.chars, ...bot1.chars],
     {
@@ -97,36 +150,61 @@ function LoopText(
       ease: "power3.inOut",
       stagger: stagger,
     },
-    displayDuration
+    t1
+  ).fromTo(
+    [...top2.chars, ...bot2.chars],
+    { y: 80, opacity: 0, filter: "blur(4px)" },
+    {
+      y: 0,
+      opacity: 1,
+      filter: "blur(0px)",
+      duration: animDuration,
+      ease: "power3.inOut",
+      stagger: stagger,
+    },
+    t1
+  );
+
+  // Phase 2 (at 6.5s): Phrase 2 (Technical Designer) -> Phrase 3 (An Interactive / Software Developer)
+  tl.to(
+    [...top2.chars, ...bot2.chars],
+    {
+      y: -80,
+      opacity: 0,
+      filter: "blur(4px)",
+      duration: animDuration,
+      ease: "power3.inOut",
+      stagger: stagger,
+    },
+    t2
   )
-    .fromTo(
-      [...top2.chars, ...bot2.chars],
-      { y: 80, opacity: 0, filter: "blur(4px)" },
-      {
-        y: 0,
-        opacity: 1,
-        filter: "blur(0px)",
-        duration: animDuration,
-        ease: "power3.inOut",
-        stagger: stagger,
-      },
-      displayDuration
-    )
-    // Phase 2 (at 6.5s): "Software Developer" transitions OUT, "Game Designer" transitions IN
     .to(
-      [...top2.chars, ...bot2.chars],
+      pref1.chars,
       {
-        y: -80,
+        y: -40,
         opacity: 0,
         filter: "blur(4px)",
         duration: animDuration,
         ease: "power3.inOut",
         stagger: stagger,
       },
-      displayDuration * 2 + animDuration
+      t2
     )
     .fromTo(
-      [...top1.chars, ...bot1.chars],
+      pref2.chars,
+      { y: 40, opacity: 0, filter: "blur(4px)" },
+      {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: animDuration,
+        ease: "power3.inOut",
+        stagger: stagger,
+      },
+      t2
+    )
+    .fromTo(
+      [...top3.chars, ...bot3.chars],
       { y: 80, opacity: 0, filter: "blur(4px)" },
       {
         y: 0,
@@ -136,6 +214,84 @@ function LoopText(
         ease: "power3.inOut",
         stagger: stagger,
       },
-      displayDuration * 2 + animDuration
+      t2
     );
+
+  // Phase 3 (at 10.0s): Phrase 3 (Software Developer) -> Phrase 4 (A Creative / Technologist)
+  tl.to(
+    [...top3.chars, ...bot3.chars],
+    {
+      y: -80,
+      opacity: 0,
+      filter: "blur(4px)",
+      duration: animDuration,
+      ease: "power3.inOut",
+      stagger: stagger,
+    },
+    t3
+  )
+    .to(
+      pref2.chars,
+      {
+        y: -40,
+        opacity: 0,
+        filter: "blur(4px)",
+        duration: animDuration,
+        ease: "power3.inOut",
+        stagger: stagger,
+      },
+      t3
+    )
+    .fromTo(
+      pref1.chars,
+      { y: 40, opacity: 0, filter: "blur(4px)" },
+      {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: animDuration,
+        ease: "power3.inOut",
+        stagger: stagger,
+      },
+      t3
+    )
+    .fromTo(
+      top4.chars,
+      { y: 80, opacity: 0, filter: "blur(4px)" },
+      {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: animDuration,
+        ease: "power3.inOut",
+        stagger: stagger,
+      },
+      t3
+    );
+
+  // Phase 4 (at 13.5s): Phrase 4 (Technologist) -> Phrase 1 (A Creative / Gameplay Programmer)
+  tl.to(
+    top4.chars,
+    {
+      y: -80,
+      opacity: 0,
+      filter: "blur(4px)",
+      duration: animDuration,
+      ease: "power3.inOut",
+      stagger: stagger,
+    },
+    t4
+  ).fromTo(
+    [...top1.chars, ...bot1.chars],
+    { y: 80, opacity: 0, filter: "blur(4px)" },
+    {
+      y: 0,
+      opacity: 1,
+      filter: "blur(0px)",
+      duration: animDuration,
+      ease: "power3.inOut",
+      stagger: stagger,
+    },
+    t4
+  );
 }
