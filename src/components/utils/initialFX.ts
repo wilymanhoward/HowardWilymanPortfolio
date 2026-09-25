@@ -90,10 +90,10 @@ function LoopText(Text1: SplitText, Text2: SplitText) {
     { opacity: 0, y: 80 },
     {
       opacity: 1,
-      duration: 1.2,
+      duration: 1.0,
       ease: "power3.inOut",
       y: 0,
-      stagger: 0.1,
+      stagger: 0.04,
       delay: delay,
     },
     0
@@ -102,10 +102,10 @@ function LoopText(Text1: SplitText, Text2: SplitText) {
       Text1.chars,
       { y: 80 },
       {
-        duration: 1.2,
+        duration: 1.0,
         ease: "power3.inOut",
         y: 0,
-        stagger: 0.1,
+        stagger: 0.04,
         delay: delay2,
       },
       1
@@ -115,9 +115,9 @@ function LoopText(Text1: SplitText, Text2: SplitText) {
       { y: 0 },
       {
         y: -80,
-        duration: 1.2,
+        duration: 1.0,
         ease: "power3.inOut",
-        stagger: 0.1,
+        stagger: 0.04,
         delay: delay,
       },
       0
@@ -126,9 +126,9 @@ function LoopText(Text1: SplitText, Text2: SplitText) {
       Text2.chars,
       {
         y: -80,
-        duration: 1.2,
+        duration: 1.0,
         ease: "power3.inOut",
-        stagger: 0.1,
+        stagger: 0.04,
         delay: delay2,
       },
       1
