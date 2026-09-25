@@ -13,7 +13,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
-[Live Demo](https://wilymanhoward.github.io/) • [LinkedIn](https://www.linkedin.com/in/howard-wilyman-595833297/) • [Instagram](https://www.instagram.com/howardd_wilymann/) • [Email](mailto:wilymanhoward@gmail.com)
+[Live Demo](https://wilymanhoward.github.io/) • [Resume (PDF)](public/Howard_Wilyman_Resume.pdf) • [LinkedIn](https://www.linkedin.com/in/howard-wilyman-595833297/) • [Instagram](https://www.instagram.com/howardd_wilymann/) • [Email](mailto:wilymanhoward@gmail.com)
 
 </div>
 

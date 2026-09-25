@@ -98,7 +98,13 @@ const SocialIcons = () => {
           </a>
         </span>
       </div>
-      <a className="resume-button" href="#">
+      <a
+        className="resume-button"
+        href="/Howard_Wilyman_Resume.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="View Howard Wilyman Resume (PDF)"
+      >
         <HoverLinks text="RESUME" />
         <span>
           <TbNotes />
