@@ -92,14 +92,17 @@
   pointer-events: none;
 }
 
-.what-card-develop:hover,
-.what-card-develop.what-content-active {
+.what-card-develop:hover {
   border-color: rgba(56, 189, 248, 0.65);
   box-shadow:
     0 24px 48px -12px rgba(0, 0, 0, 0.7),
     0 0 32px -4px rgba(56, 189, 248, 0.3),
     inset 0 1px 1px rgba(255, 255, 255, 0.2);
   transform: translateY(-3px);
+}
+
+.what-card-develop.is-expanded {
+  border-color: rgba(56, 189, 248, 0.35);
 }
 
 /* Design Card (Cyber Violet Accent) */
@@ -131,8 +134,7 @@
   pointer-events: none;
 }
 
-.what-card-design:hover,
-.what-card-design.what-content-active {
+.what-card-design:hover {
   border-color: rgba(168, 85, 247, 0.65);
   box-shadow:
     0 24px 48px -12px rgba(0, 0, 0, 0.7),
@@ -141,12 +143,39 @@
   transform: translateY(-3px);
 }
 
-/* Sibling Demotion */
-.what-noTouch:hover ~ .what-content,
-.what-box-in:hover .what-noTouch:not(:hover),
-.what-content.what-sibling {
-  opacity: 0.6;
-  transform: scale(0.985);
+.what-card-design.is-expanded {
+  border-color: rgba(168, 85, 247, 0.35);
+}
+
+/* Minimized State */
+.what-content.is-minimized {
+  padding: 18px 28px;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.what-content.is-minimized .what-card-header {
+  margin-bottom: 0;
+}
+
+/* Accordion Smooth Grid Transition */
+.what-card-body-wrapper {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition:
+    grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s ease;
+  opacity: 1;
+}
+
+.what-card-body {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.what-content.is-minimized .what-card-body-wrapper {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Card Header */
@@ -155,6 +184,9 @@
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: margin-bottom 0.35s ease;
 }
 
 .what-card-num {
@@ -182,19 +214,17 @@
   transition: all 0.3s ease;
 }
 
-.what-card-develop:hover h3,
-.what-card-develop.what-content-active h3 {
+.what-card-develop:hover h3 {
   color: #f0f9ff;
   text-shadow: 0 0 20px rgba(56, 189, 248, 0.45);
 }
 
-.what-card-design:hover h3,
-.what-card-design.what-content-active h3 {
+.what-card-design:hover h3 {
   color: #faf5ff;
   text-shadow: 0 0 20px rgba(168, 85, 247, 0.45);
 }
 
-/* Chevron Badge */
+/* Minimize / Chevron Button */
 .what-arrow {
   width: 36px;
   height: 36px;
@@ -205,26 +235,65 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.7);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
   flex-shrink: 0;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
 }
 
-.what-card-develop:hover .what-arrow,
-.what-card-develop.what-content-active .what-arrow {
-  background: rgba(56, 189, 248, 0.15);
-  border-color: rgba(56, 189, 248, 0.5);
+.what-arrow:focus-visible {
+  outline: 2px solid var(--accentColor);
+  outline-offset: 2px;
+}
+
+/* Expanded State: Chevron points UP (indicates click to minimize) */
+.what-content.is-expanded .what-arrow {
+  transform: rotate(180deg);
+}
+
+/* Minimized State: Chevron points DOWN (indicates click to expand) */
+.what-content.is-minimized .what-arrow {
+  transform: rotate(0deg);
+}
+
+.what-card-develop .what-arrow:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.6);
   color: #38bdf8;
-  transform: rotate(180deg);
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
 }
 
-.what-card-design:hover .what-arrow,
-.what-card-design.what-content-active .what-arrow {
-  background: rgba(168, 85, 247, 0.15);
-  border-color: rgba(168, 85, 247, 0.5);
+.what-card-develop.is-expanded .what-arrow {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+}
+
+.what-card-design .what-arrow:hover {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: rgba(168, 85, 247, 0.6);
   color: #c084fc;
-  transform: rotate(180deg);
-  box-shadow: 0 0 14px rgba(168, 85, 247, 0.3);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
+}
+
+.what-card-design.is-expanded .what-arrow {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+}
+
+.what-content.is-minimized .what-arrow:hover {
+  transform: rotate(0deg) scale(1.1);
+}
+
+.what-content.is-expanded .what-arrow:hover {
+  transform: rotate(180deg) scale(1.1);
 }
 
 /* Text Content */
@@ -331,6 +400,9 @@
     font-size: 11.5px;
     padding: 4px 11px;
   }
+  .what-content.is-minimized {
+    padding: 16px 24px;
+  }
 }
 
 @media only screen and (max-width: 1024px) {
@@ -344,6 +416,9 @@
   }
   .what-content {
     padding: 24px;
+  }
+  .what-content.is-minimized {
+    padding: 16px 22px;
   }
 }
 
@@ -373,6 +448,9 @@
   .what-content {
     padding: 22px;
   }
+  .what-content.is-minimized {
+    padding: 16px 20px;
+  }
   .what-content h3 {
     font-size: 26px;
   }
@@ -397,6 +475,9 @@
   .what-content {
     padding: 20px 18px;
     border-radius: 18px;
+  }
+  .what-content.is-minimized {
+    padding: 14px 16px;
   }
   .what-content h3 {
     font-size: 22px;
