@@ -2,22 +2,10 @@ import { useState } from "react";
 import "./styles/WhatIDo.css";
 
 const WhatIDo = () => {
-  const [minimizedCards, setMinimizedCards] = useState<{ [key: number]: boolean }>({
-    0: false,
-    1: false,
-  });
+  const [openCard, setOpenCard] = useState<number | null>(null);
 
-  const toggleCard = (index: number) => {
-    setMinimizedCards((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
-
-  const handleCardClick = (index: number) => {
-    if (minimizedCards[index]) {
-      toggleCard(index);
-    }
+  const handleToggle = (index: number) => {
+    setOpenCard((prev) => (prev === index ? null : index));
   };
 
   return (
@@ -35,30 +23,12 @@ const WhatIDo = () => {
           {/* Card 0: DEVELOP */}
           <div
             className={`what-content what-card-develop ${
-              minimizedCards[0] ? "is-minimized" : "is-expanded"
+              openCard === 0 ? "is-open" : ""
             }`}
-            onClick={() => handleCardClick(0)}
+            onClick={() => handleToggle(0)}
           >
             <div className="what-content-in">
-              <div
-                className="what-card-header"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleCard(0);
-                }}
-                role="button"
-                tabIndex={0}
-                aria-expanded={!minimizedCards[0]}
-                aria-label={
-                  minimizedCards[0] ? "Expand DEVELOP card" : "Minimize DEVELOP card"
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    toggleCard(0);
-                  }
-                }}
-              >
+              <div className="what-card-header">
                 <div>
                   <span className="what-card-num">01</span>
                   <h3>DEVELOP</h3>
@@ -66,14 +36,11 @@ const WhatIDo = () => {
                 <button
                   type="button"
                   className="what-arrow"
-                  aria-expanded={!minimizedCards[0]}
-                  aria-label={
-                    minimizedCards[0] ? "Expand DEVELOP card" : "Minimize DEVELOP card"
-                  }
-                  title={minimizedCards[0] ? "Expand" : "Minimize"}
+                  aria-label="Toggle DEVELOP details"
+                  title="Expand or minimize"
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleCard(0);
+                    handleToggle(0);
                   }}
                 >
                   <svg
@@ -115,30 +82,12 @@ const WhatIDo = () => {
           {/* Card 1: DESIGN */}
           <div
             className={`what-content what-card-design ${
-              minimizedCards[1] ? "is-minimized" : "is-expanded"
+              openCard === 1 ? "is-open" : ""
             }`}
-            onClick={() => handleCardClick(1)}
+            onClick={() => handleToggle(1)}
           >
             <div className="what-content-in">
-              <div
-                className="what-card-header"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleCard(1);
-                }}
-                role="button"
-                tabIndex={0}
-                aria-expanded={!minimizedCards[1]}
-                aria-label={
-                  minimizedCards[1] ? "Expand DESIGN card" : "Minimize DESIGN card"
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    toggleCard(1);
-                  }
-                }}
-              >
+              <div className="what-card-header">
                 <div>
                   <span className="what-card-num">02</span>
                   <h3>DESIGN</h3>
@@ -146,14 +95,11 @@ const WhatIDo = () => {
                 <button
                   type="button"
                   className="what-arrow"
-                  aria-expanded={!minimizedCards[1]}
-                  aria-label={
-                    minimizedCards[1] ? "Expand DESIGN card" : "Minimize DESIGN card"
-                  }
-                  title={minimizedCards[1] ? "Expand" : "Minimize"}
+                  aria-label="Toggle DESIGN details"
+                  title="Expand or minimize"
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleCard(1);
+                    handleToggle(1);
                   }}
                 >
                   <svg
