@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import "./styles/Loading.css";
 import { useLoading } from "../context/LoadingProvider";
 import LoadingLines from "@/components/ui/loading-lines";
@@ -17,18 +17,21 @@ const Loading = ({ percent }: { percent: number }) => {
   }
 
   useEffect(() => {
-    import("./utils/initialFX").then((module) => {
-      if (isLoaded) {
-        setClicked(true);
+    if (isLoaded) {
+      setClicked(true);
+      import("./utils/initialFX").then((module) => {
         setTimeout(() => {
           if (module.initialFX) {
             module.initialFX();
           }
+        }, isMobile ? 100 : 150);
+
+        setTimeout(() => {
           setIsLoading(false);
-        }, isMobile ? 500 : 800);
-      }
-    });
-  }, [isLoaded, isMobile]);
+        }, isMobile ? 500 : 750);
+      });
+    }
+  }, [isLoaded, isMobile, setIsLoading]);
 
   return (
     <div

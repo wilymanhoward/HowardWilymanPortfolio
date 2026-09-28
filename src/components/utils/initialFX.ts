@@ -1,4 +1,4 @@
-import { SplitText } from "gsap-trial/SplitText";
+﻿import { SplitText } from "gsap-trial/SplitText";
 import gsap from "gsap";
 import { smoother } from "../Navbar";
 
@@ -115,6 +115,20 @@ function LoopText(
   const displayDuration = 3.0; // Rapidly changing every 3 seconds
   const animDuration = 0.5;   // Crisp, fast animation
   const stagger = 0.02;
+
+  // Unhide the parent container elements now that individual characters are controlled by GSAP
+  gsap.set(
+    [
+      ".landing-prefix-2",
+      ".landing-h2-2",
+      ".landing-h2-3",
+      ".landing-h2-4",
+      ".landing-h2-info-2",
+      ".landing-h2-info-3",
+      ".landing-h2-info-4",
+    ],
+    { opacity: 1, pointerEvents: "auto" }
+  );
 
   // Ensure phrases 2, 3, 4 and prefix 2 start hidden
   gsap.set(

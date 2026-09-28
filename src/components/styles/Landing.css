@@ -1,4 +1,4 @@
-.landing-section {
+﻿.landing-section {
   width: 100%;
   max-width: var(--cMaxWidth);
   margin: auto;
@@ -255,6 +255,8 @@
   top: 0;
   left: 0;
   white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
 }
 .landing-h2-info,
 .landing-h2-1 {
@@ -271,6 +273,8 @@
   top: 0;
   left: 0;
   white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
 }
 .landing-h2-4 {
   font-size: 0.76em;
