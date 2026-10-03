@@ -176,26 +176,13 @@ export function setAllTimeline() {
   const careerTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: ".career-section",
-      start: "top 30%",
-      end: "100% center",
+      start: "top 60%",
+      end: "bottom 70%",
       scrub: true,
       invalidateOnRefresh: true,
     },
   });
   careerTimeline
-    .fromTo(
-      ".career-timeline",
-      { maxHeight: "10%" },
-      { maxHeight: "100%", duration: 0.5 },
-      0
-    )
-
-    .fromTo(
-      ".career-timeline",
-      { opacity: 0 },
-      { opacity: 1, duration: 0.1 },
-      0
-    )
     .fromTo(
       ".career-info-box",
       { opacity: 0 },
@@ -213,19 +200,28 @@ export function setAllTimeline() {
       0
     );
 
-  if (window.innerWidth > 1024) {
-    careerTimeline.fromTo(
-      ".career-section",
-      { y: 0 },
-      { y: "20%", duration: 0.5, delay: 0.2 },
+  // The line is tied to the list itself, so it draws downward exactly
+  // while the cards scroll through the screen.
+  gsap
+    .timeline({
+      scrollTrigger: {
+        trigger: ".career-info",
+        start: "top 65%",
+        end: "bottom 65%",
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+      },
+    })
+    .fromTo(
+      ".career-timeline",
+      { maxHeight: "0%" },
+      { maxHeight: "100%", duration: 1, ease: "none" },
+      0
+    )
+    .fromTo(
+      ".career-timeline",
+      { opacity: 0 },
+      { opacity: 1, duration: 0.05, ease: "none" },
       0
     );
-  } else {
-    careerTimeline.fromTo(
-      ".career-section",
-      { y: 0 },
-      { y: 0, duration: 0.5, delay: 0.2 },
-      0
-    );
-  }
 }

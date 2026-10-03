@@ -3,37 +3,41 @@ import "./styles/Career.css";
 const projects = [
   {
     title: "We Were Mummies",
-    role: "Player & Multiplayer Lead · Unity, C#, Multiplayer Networking",
+    role: "Multiplayer Lead",
     date: "Jun 2026",
+    tags: ["Unity", "C#", "Networking"],
     description:
-      "2-Player online co-op game, team of 3. Designed the asymmetric \"Blind & Deaf\" curse mechanic, built the multiplayer backbone (lobby, 2-player sync, in-game voice chat) and core player systems. Awarded \"Best Game\" by the course instructor and graded 4.0.",
+      "Co-op escape game where one player is blind and the other is deaf. Awarded “Best Game”.",
   },
   {
     title: "AquaStrike",
-    role: "Solo Developer · Unity, C#",
+    role: "Solo Developer",
     date: "Jul 2026",
+    tags: ["Unity", "C#"],
     description:
-      "1v1 online multiplayer combat game set in a water-park arena, where two players battle with water guns and balloons. Built every system end-to-end: physics-based projectile combat, real-time multiplayer sync, UI, and game loop.",
+      "Online 1v1 water-gun battle in a water-park arena, built end-to-end.",
   },
   {
     title: "CODU",
-    role: "Fullstack Developer · Flutter, Firebase",
+    role: "Fullstack Developer",
     date: "Jul 2026",
+    tags: ["Flutter", "Firebase"],
     description:
-      "Duolingo-inspired Android app for learning Python, C++, JavaScript, and Java through gamified lessons. Designed the Flutter frontend, built the Firebase backend solo, and added a real-time PvP duel mode for live coding challenges.",
+      "Duolingo-style Android app for learning to code, with live PvP duels.",
   },
   {
-    title: "Mixed Reality Virtual Museum",
-    role: "Development Assistant · Unity, XR Interaction Toolkit, AR Foundation",
-    date: "Jul 2026 - Now",
+    title: "Mixed Reality Museum",
+    role: "Development Assistant",
+    date: "Jul 2026 – Now",
+    tags: ["Unity", "XR Toolkit", "AR Foundation"],
     description:
-      "Master's research project recreating a museum experience accessible from anywhere. Independently built 18 interactive 3D artifact exhibits with grab-and-inspect interactions, deployed and tested on Meta Quest 3.",
+      "18 interactive 3D exhibits for a Master’s MR research project, running on Meta Quest 3.",
   },
 ];
 
 const Career = () => {
   return (
-    <div className="career-section section-container">
+    <div className="career-section section-container" id="projects">
       <div className="career-container">
         <h2>
           My <span>Projects</span>
@@ -48,6 +52,11 @@ const Career = () => {
                 <div className="career-role">
                   <h4>{project.title}</h4>
                   <h5>{project.role}</h5>
+                  <div className="career-tags">
+                    {project.tags.map((tag) => (
+                      <span key={tag}>{tag}</span>
+                    ))}
+                  </div>
                 </div>
                 <h3>{project.date}</h3>
               </div>

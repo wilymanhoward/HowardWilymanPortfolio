@@ -34,7 +34,6 @@ const Work = () => {
         end: () => `+=${calculateTranslateX() + 300}`,
         scrub: 1,
         pin: true,
-        anticipatePin: 1,
         invalidateOnRefresh: true,
         id: "work",
       },
