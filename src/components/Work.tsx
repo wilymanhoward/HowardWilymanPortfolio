@@ -58,7 +58,7 @@ const Work = () => {
     <div className="work-section" id="work">
       <div className="work-container section-container">
         <h2>
-          My <span>Work</span>
+          <span>Gallery</span>
         </h2>
         <div className="work-flex">
           {[...Array(6)].map((_value, index) => (
