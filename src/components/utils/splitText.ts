@@ -2,6 +2,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap-trial/ScrollSmoother";
 import { SplitText } from "gsap-trial/SplitText";
+import { isMobileLayout } from "./layout";
 
 interface ParaElement extends HTMLElement {
   anim?: gsap.core.Animation;
@@ -16,7 +17,7 @@ export default function setSplitText() {
   const paras: NodeListOf<ParaElement> = document.querySelectorAll(".para");
   const titles: NodeListOf<ParaElement> = document.querySelectorAll(".title");
 
-  const TriggerStart = window.innerWidth <= 1024 ? "top 60%" : "20% 60%";
+  const TriggerStart = isMobileLayout() ? "top 60%" : "20% 60%";
   const ToggleAction = "play pause resume reverse";
 
   paras.forEach((para: ParaElement) => {

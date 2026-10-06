@@ -10,17 +10,18 @@ import SocialIcons from "./SocialIcons";
 import WhatIDo from "./WhatIDo";
 import Work from "./Work";
 import setSplitText from "./utils/splitText";
+import { isMobileLayout } from "./utils/layout";
 
 
 const MainContainer = ({ children }: PropsWithChildren) => {
   const [isDesktopView, setIsDesktopView] = useState<boolean>(
-    window.innerWidth > 1024
+    !isMobileLayout()
   );
 
   useEffect(() => {
     const resizeHandler = () => {
       setSplitText();
-      setIsDesktopView(window.innerWidth > 1024);
+      setIsDesktopView(!isMobileLayout());
     };
     resizeHandler();
     if (typeof document !== "undefined" && document.fonts) {

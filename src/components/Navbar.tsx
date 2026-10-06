@@ -4,6 +4,7 @@ import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
 import { ScrollSmoother } from "gsap-trial/ScrollSmoother";
 import "./styles/Navbar.css";
+import { isMobileLayout } from "./utils/layout";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
 export let smoother: ScrollSmoother;
@@ -27,7 +28,7 @@ const Navbar = () => {
     links.forEach((elem) => {
       let element = elem as HTMLAnchorElement;
       element.addEventListener("click", (e) => {
-        if (window.innerWidth > 1024) {
+        if (!isMobileLayout()) {
           e.preventDefault();
           let elem = e.currentTarget as HTMLAnchorElement;
           let section = elem.getAttribute("data-href");

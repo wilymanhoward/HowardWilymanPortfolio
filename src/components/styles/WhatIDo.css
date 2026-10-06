@@ -389,12 +389,15 @@
   }
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 768px), only screen and (max-aspect-ratio: 4/5) {
   .whatIDO {
     min-height: auto;
     padding: 80px 0;
   }
   .what-box-in {
+    /* Desktop reveals the cards with a scroll animation; mobile shows them
+       straight away so they never depend on the 3D model loading. */
+    display: flex;
     width: 420px;
     margin-left: 0;
   }
@@ -404,6 +407,65 @@
   .what-content:hover,
   .what-content.is-open {
     padding: 24px 26px;
+  }
+
+  /* Performance on phones, same final look:
+     - No backdrop blur: the cards sit on the plain dark page background,
+       so the blur was invisible but re-rendered every animation frame.
+     - The open-state glow lives on a pseudo-element and fades with opacity
+       (GPU-cheap) instead of animating large blurred box-shadows.
+     - Only the properties that actually change are transitioned. */
+  .what-content {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    overflow: visible;
+    transition:
+      padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.4s ease;
+  }
+  .what-content::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .what-card-develop::after {
+    box-shadow:
+      0 24px 48px -12px rgba(0, 0, 0, 0.7),
+      0 0 32px -4px rgba(56, 189, 248, 0.3),
+      inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  }
+  .what-card-design::after {
+    box-shadow:
+      0 24px 48px -12px rgba(0, 0, 0, 0.7),
+      0 0 32px -4px rgba(168, 85, 247, 0.3),
+      inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  }
+  .what-content:hover::after,
+  .what-content.is-open::after {
+    opacity: 1;
+  }
+  .what-card-develop:hover,
+  .what-card-develop.is-open,
+  .what-card-design:hover,
+  .what-card-design.is-open {
+    box-shadow:
+      0 14px 30px -10px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  .what-content h3 {
+    transition: color 0.3s ease;
+  }
+  .what-arrow {
+    transition:
+      transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+      background 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease;
   }
 }
 

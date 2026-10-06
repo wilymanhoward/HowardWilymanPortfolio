@@ -313,7 +313,7 @@
 }
 
 /* Hide on mobile / tablet to prevent crowding */
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 768px), screen and (max-aspect-ratio: 4/5) {
   .landing-decorations {
     display: none !important;
   }

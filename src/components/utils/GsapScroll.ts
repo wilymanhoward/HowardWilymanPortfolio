@@ -1,14 +1,20 @@
 import * as THREE from "three";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isMobileLayout } from "./layout";
+
+let intensity = 0;
+let intensityTimer: ReturnType<typeof setInterval> | null = null;
 
 export function setCharTimeline(
   character: THREE.Object3D<THREE.Object3DEventMap> | null,
   camera: THREE.PerspectiveCamera
 ) {
-  let intensity: number = 0;
-  setInterval(() => {
-    intensity = Math.random();
-  }, 200);
+  if (!intensityTimer) {
+    intensityTimer = setInterval(() => {
+      intensity = Math.random();
+    }, 200);
+  }
   const tl1 = gsap.timeline({
     scrollTrigger: {
       trigger: ".landing-section",
@@ -78,6 +84,7 @@ export function setCharTimeline(
       object.material.transparent = true;
       object.material.opacity = 0;
       object.material.emissive?.set("#4f8cff");
+      gsap.killTweensOf(object.material);
       gsap.timeline({ repeat: -1, repeatRefresh: true }).to(object.material, {
         emissiveIntensity: () => intensity * 8,
         duration: () => Math.random() * 0.6,
@@ -92,7 +99,7 @@ export function setCharTimeline(
     character?.getObjectByName("FK-Neck") ||
     character?.getObjectByName("FK-Head") ||
     null;
-  if (window.innerWidth > 1024) {
+  if (!isMobileLayout()) {
     if (character) {
       tl1
         .fromTo(character.rotation, { y: 0 }, { y: 0.7, duration: 1 }, 0)
@@ -172,7 +179,17 @@ export function setCharTimeline(
   }
 }
 
+let sectionTimelines: gsap.core.Timeline[] = [];
+
+// Safe to call repeatedly (page mount, model load, resize): each call
+// replaces the previous section timelines instead of stacking new ones.
 export function setAllTimeline() {
+  sectionTimelines.forEach((tl) => {
+    tl.scrollTrigger?.kill();
+    tl.kill();
+  });
+  sectionTimelines = [];
+
   const careerTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: ".career-section",
@@ -202,8 +219,7 @@ export function setAllTimeline() {
 
   // The line is tied to the list itself, so it draws downward exactly
   // while the cards scroll through the screen.
-  gsap
-    .timeline({
+  const lineTimeline = gsap.timeline({
       scrollTrigger: {
         trigger: ".career-info",
         start: "top 65%",
@@ -211,7 +227,8 @@ export function setAllTimeline() {
         scrub: 0.5,
         invalidateOnRefresh: true,
       },
-    })
+    });
+  lineTimeline
     .fromTo(
       ".career-timeline",
       { maxHeight: "0%" },
@@ -224,4 +241,10 @@ export function setAllTimeline() {
       { opacity: 1, duration: 0.05, ease: "none" },
       0
     );
+  sectionTimelines.push(careerTimeline, lineTimeline);
+
+  // Re-measure every trigger (including the pinned Gallery) now that the
+  // page has its final layout; otherwise pins measured during loading keep
+  // a zero scroll length and overlap the sections after them.
+  ScrollTrigger.refresh();
 }

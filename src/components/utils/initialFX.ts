@@ -1,11 +1,21 @@
 ﻿import { SplitText } from "gsap-trial/SplitText";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { smoother } from "../Navbar";
 
-export function initialFX() {
+export function initialFX(attempt = 0) {
+  // On phones the loading screen can finish before the navbar has created
+  // the scroll smoother; wait for it (up to ~5s) so the page never stays
+  // paused and blank.
+  if (!smoother && attempt < 300) {
+    setTimeout(() => initialFX(attempt + 1), 16);
+    return;
+  }
   document.body.style.overflowY = "auto";
-  smoother.paused(false);
+  smoother?.paused(false);
   document.getElementsByTagName("main")[0].classList.add("main-active");
+  // Showing the scrollbar changes the page width, so re-measure scroll pins.
+  requestAnimationFrame(() => ScrollTrigger.refresh());
   gsap.to("body", {
     backgroundColor: "#0b080c",
     duration: 0.5,

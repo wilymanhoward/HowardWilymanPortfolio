@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { setCharTimeline, setAllTimeline } from "../../utils/GsapScroll";
+import { isMobileLayout } from "../../utils/layout";
 
 export default function handleResize(
   renderer: THREE.WebGLRenderer,
@@ -12,7 +13,7 @@ export default function handleResize(
   let canvas3d = canvasDiv.current.getBoundingClientRect();
   const width = canvas3d.width;
   const height = canvas3d.height;
-  const isMobile = window.innerWidth <= 1024;
+  const isMobile = isMobileLayout();
   renderer.setPixelRatio(
     isMobile ? Math.min(window.devicePixelRatio, 1.5) : window.devicePixelRatio
   );

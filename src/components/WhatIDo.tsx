@@ -1,8 +1,40 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./styles/WhatIDo.css";
+import { isMobileLayout } from "./utils/layout";
 
 const WhatIDo = () => {
   const [openCard, setOpenCard] = useState<number | null>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  // On mobile (no hover), the cards open as you scroll: DEVELOP first, then
+  // DESIGN. Measured from the list's top edge, which doesn't move when a card
+  // expands, so the switch can't flicker. Taps still toggle between steps.
+  useEffect(() => {
+    let lastStep: number | null = null;
+    const update = () => {
+      const box = boxRef.current;
+      if (!box || !isMobileLayout()) return;
+      const top = box.getBoundingClientRect().top / window.innerHeight;
+      const step = top < 0.25 ? 1 : top < 0.65 ? 0 : null;
+      if (step !== lastStep) {
+        lastStep = step;
+        setOpenCard(step);
+      }
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+
+  // Opening or closing a card changes the page height, so the scroll
+  // animations below (My Projects timeline) must be re-measured once the
+  // card has finished resizing.
+  useEffect(() => {
+    if (!isMobileLayout()) return;
+    const id = setTimeout(() => ScrollTrigger.refresh(), 450);
+    return () => clearTimeout(id);
+  }, [openCard]);
 
   const handleToggle = (index: number) => {
     setOpenCard((prev) => (prev === index ? null : index));
@@ -19,7 +51,7 @@ const WhatIDo = () => {
         </h2>
       </div>
       <div className="what-box">
-        <div className="what-box-in">
+        <div className="what-box-in" ref={boxRef}>
           {/* Card 0: DEVELOP */}
           <div
             className={`what-content what-card-develop ${

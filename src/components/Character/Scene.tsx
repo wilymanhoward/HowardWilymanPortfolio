@@ -12,6 +12,7 @@ import {
 } from "./utils/mouseUtils";
 import setAnimations from "./utils/animationUtils";
 import { setProgress } from "../Loading";
+import { isMobileLayout } from "../utils/layout";
 
 function createPupilTexture(): THREE.CanvasTexture {
   const size = 512;
@@ -262,7 +263,9 @@ const Scene = () => {
   const hoverDivRef = useRef<HTMLDivElement>(null);
   const { setLoading } = useLoading();
 
-  const [character, setChar] = useState<THREE.Object3D | null>(null);
+  const [, setChar] = useState<THREE.Object3D | null>(null);
+  const [isMobileView] = useState(isMobileLayout);
+  const [modelReady, setModelReady] = useState(false);
   useEffect(() => {
     if (canvasDiv.current) {
       let isDisposed = false;
@@ -272,7 +275,7 @@ const Scene = () => {
       const aspect = container.width / container.height;
       const scene = new THREE.Scene();
 
-      const isMobile = window.innerWidth <= 1024;
+      const isMobile = isMobileLayout();
 
       const renderer = new THREE.WebGLRenderer({
         alpha: true,
@@ -282,7 +285,9 @@ const Scene = () => {
       });
       renderer.setSize(container.width, container.height);
       renderer.setPixelRatio(
-        isMobile ? Math.min(window.devicePixelRatio, 1.5) : window.devicePixelRatio
+        isMobile
+          ? Math.min(window.devicePixelRatio, 1.25)
+          : Math.min(window.devicePixelRatio, 2)
       );
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1;
@@ -301,9 +306,20 @@ const Scene = () => {
       let mixer: THREE.AnimationMixer;
 
       const clock = new THREE.Clock();
+      let onResize: (() => void) | null = null;
 
       const light = setLighting(scene);
-      let progress = setProgress((value) => setLoading(value));
+      // Phones open the page as soon as the still picture is ready and let
+      // the 3D model stream in behind it; desktop waits for the model.
+      let progress = isMobile ? null : setProgress((value) => setLoading(value));
+      if (isMobile) {
+        const poster = new Image();
+        const finish = () => setLoading(100);
+        poster.onload = finish;
+        poster.onerror = finish;
+        poster.src = "/images/character_mobile.webp";
+        setTimeout(finish, 1500);
+      }
       const { loadCharacter } = setCharacter(renderer, scene, camera);
 
       // Base pupil positions on the eye sphere surfaces and dynamic uniforms
@@ -354,18 +370,6 @@ const Scene = () => {
           character.name = "CharacterRoot";
           setChar(character);
           scene.add(character);
-          (window as any).__THREE_CHARACTER__ = character;
-          (window as any).__THREE_SCENE__ = scene;
-          console.log("[DEBUG] Character loaded. Children of HeadBone:",
-            character.getObjectByName("HeadBone")?.children.map((c: any) => ({ name: c.name, type: c.type, isMesh: !!c.isMesh }))
-          );
-          const allMeshes: any[] = [];
-          character.traverse((child: any) => {
-            if (child.isMesh) {
-              allMeshes.push({ name: child.name, mat: Array.isArray(child.material) ? child.material.map((m: any) => m.name) : child.material?.name });
-            }
-          });
-          console.log("[DEBUG] All meshes in character:", allMeshes);
 
           // ── SETUP SMILE MORPH TARGETS ON MOUTH & HEAD MESHES ────────────
           const headGroup = character.getObjectByName("rex_head");
@@ -486,16 +490,29 @@ const Scene = () => {
           // ─────────────────────────────────────────────────────────────────
 
           screenLight = character.getObjectByName("screenlight") || null;
-          progress.loaded().then(() => {
-            setTimeout(() => {
-              light.turnOnLights();
-              animations.startIntro();
-            }, isMobile ? 1100 : 2500);
-          });
-          const onResize = () => {
-            if (character) {
+          if (progress) {
+            progress.loaded().then(() => {
+              setTimeout(() => {
+                light.turnOnLights();
+                animations.startIntro();
+              }, 2500);
+            });
+          } else {
+            light.turnOnLights();
+            animations.startIntro();
+            // Let the lights fade up before swapping out the picture.
+            setTimeout(() => setModelReady(true), 600);
+          }
+          let resizeTimer: ReturnType<typeof setTimeout>;
+          let lastWidth = window.innerWidth;
+          onResize = () => {
+            // Mobile browsers fire resize when the address bar hides; only rebuild on width changes.
+            if (isMobile && window.innerWidth === lastWidth) return;
+            lastWidth = window.innerWidth;
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
               handleResize(renderer, camera, canvasDiv, character);
-            }
+            }, 150);
           };
           window.addEventListener("resize", onResize);
         }
@@ -515,7 +532,9 @@ const Scene = () => {
           isSmiling = true;
         }
       };
-      document.addEventListener("mousemove", onMouseMoveListener);
+      if (!isMobile) {
+        document.addEventListener("mousemove", onMouseMoveListener);
+      }
 
       const onTouchMoveListener = (e: TouchEvent) => {
         handleTouchMove(e, (x, y) => (mouse = { x, y }));
@@ -538,13 +557,15 @@ const Scene = () => {
         });
       };
 
-      const landingDiv = document.getElementById("landingDiv");
+      const landingDiv = isMobile ? null : document.getElementById("landingDiv");
       if (landingDiv) {
         landingDiv.addEventListener("touchstart", onTouchStartListener, { passive: true });
         landingDiv.addEventListener("touchend", onTouchEndListener);
       }
-      window.addEventListener("touchstart", onTouchStartListener, { passive: true });
-      window.addEventListener("touchend", onTouchEndListener);
+      if (!isMobile) {
+        window.addEventListener("touchstart", onTouchStartListener, { passive: true });
+        window.addEventListener("touchend", onTouchEndListener);
+      }
 
       // ── Social Icons Hover Detection (Triggers Smiling) ────────────────
       const onSocialEnter = () => {
@@ -554,7 +575,9 @@ const Scene = () => {
         isSmiling = false;
       };
 
-      const socialContainer = document.getElementById("social") || document.querySelector(".social-icons");
+      const socialContainer = isMobile
+        ? null
+        : document.getElementById("social") || document.querySelector(".social-icons");
       if (socialContainer) {
         socialContainer.addEventListener("mouseenter", onSocialEnter);
         socialContainer.addEventListener("mouseleave", onSocialLeave);
@@ -573,14 +596,26 @@ const Scene = () => {
           isSmiling = false;
         }
       };
-      document.addEventListener("mouseover", onGlobalMouseOver);
-      document.addEventListener("mouseout", onGlobalMouseOut);
+      if (!isMobile) {
+        document.addEventListener("mouseover", onGlobalMouseOver);
+        document.addEventListener("mouseout", onGlobalMouseOut);
+      }
       // ───────────────────────────────────────────────────────────────────
 
-      const animate = () => {
+      // Mobile renders at ~30fps and skips cursor tracking to save battery.
+      const frameInterval = isMobile ? 1000 / 30 : 0;
+      let lastFrameTime = 0;
+
+      const animate = (time = 0) => {
         if (isDisposed) return;
         animationFrameId = requestAnimationFrame(animate);
-        if (headBone) {
+        if (frameInterval && time - lastFrameTime < frameInterval) return;
+        lastFrameTime = time;
+        if (!isCanvasVisible) {
+          clock.getDelta();
+          return;
+        }
+        if (headBone && !isMobile) {
           handleHeadRotation(
             headBone,
             mouse.x,
@@ -684,15 +719,12 @@ const Scene = () => {
         if (mixer) {
           mixer.update(delta);
         }
-        if (isMobile && !isCanvasVisible) {
-          return;
-        }
         renderer.render(scene, camera);
       };
 
       let isCanvasVisible = true;
       let observer: IntersectionObserver | null = null;
-      if (isMobile && typeof IntersectionObserver !== "undefined" && canvasDiv.current) {
+      if (typeof IntersectionObserver !== "undefined" && canvasDiv.current) {
         observer = new IntersectionObserver(
           (entries) => {
             if (entries[0]) {
@@ -711,6 +743,9 @@ const Scene = () => {
         cancelAnimationFrame(animationFrameId);
         if (observer) {
           observer.disconnect();
+        }
+        if (onResize) {
+          window.removeEventListener("resize", onResize);
         }
         document.removeEventListener("mousemove", onMouseMoveListener);
         document.removeEventListener("mouseover", onGlobalMouseOver);
@@ -738,7 +773,21 @@ const Scene = () => {
   return (
     <>
       <div className="character-container">
-        <div className="character-model" ref={canvasDiv}>
+        <div
+          className={`character-model${modelReady ? " model-ready" : ""}`}
+          ref={canvasDiv}
+        >
+          {isMobileView && (
+            <img
+              src="/images/character_mobile.webp"
+              alt=""
+              aria-hidden="true"
+              className="character-img-mobile"
+              width="486"
+              height="565"
+              decoding="async"
+            />
+          )}
           <div className="character-rim"></div>
           <div className="character-hover" ref={hoverDivRef}></div>
         </div>

@@ -2,13 +2,14 @@
 import "./styles/Loading.css";
 import { useLoading } from "../context/LoadingProvider";
 import LoadingLines from "@/components/ui/loading-lines";
+import { isMobileLayout } from "./utils/layout";
 
 const Loading = ({ percent }: { percent: number }) => {
   const { setIsLoading } = useLoading();
   const [isLoaded, setIsLoaded] = useState(false);
   const [clicked, setClicked] = useState(false);
 
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 1024;
+  const isMobile = isMobileLayout();
 
   if (percent >= 100 && !isLoaded) {
     setTimeout(() => {
@@ -62,7 +63,7 @@ const Loading = ({ percent }: { percent: number }) => {
 export default Loading;
 
 export const setProgress = (setLoading: (value: number) => void) => {
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 1024;
+  const isMobile = isMobileLayout();
   let percent: number = 0;
 
   let interval = setInterval(() => {

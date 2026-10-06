@@ -3,6 +3,7 @@ import WorkImage from "./WorkImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { DESKTOP_QUERY } from "./utils/layout";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -27,30 +28,37 @@ const Work = () => {
       return Math.max(0, distance);
     }
 
-    const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".work-section",
-        start: "top top",
-        end: () => `+=${calculateTranslateX() + 300}`,
-        scrub: 1,
-        pin: true,
-        invalidateOnRefresh: true,
-        id: "work",
-      },
+    // Desktop pins the section and scrolls the row sideways. On phones the
+    // row is a native swipe list instead (see Work.css), which is lighter.
+    const mm = gsap.matchMedia();
+    mm.add(DESKTOP_QUERY, () => {
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".work-section",
+          start: "top top",
+          end: () => `+=${calculateTranslateX() + 300}`,
+          scrub: 1,
+          pin: true,
+          invalidateOnRefresh: true,
+          id: "work",
+        },
+      });
+
+      timeline
+        .to(".work-flex", {
+          x: () => -calculateTranslateX(),
+          ease: "none",
+          duration: 1,
+        })
+        .to({}, { duration: 0.15 });
+
+      return () => {
+        timeline.kill();
+        ScrollTrigger.getById("work")?.kill();
+      };
     });
 
-    timeline
-      .to(".work-flex", {
-        x: () => -calculateTranslateX(),
-        ease: "none",
-        duration: 1,
-      })
-      .to({}, { duration: 0.15 });
-
-    return () => {
-      timeline.kill();
-      ScrollTrigger.getById("work")?.kill();
-    };
+    return () => mm.revert();
   }, []);
 
   return (

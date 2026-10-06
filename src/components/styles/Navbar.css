@@ -3,7 +3,7 @@
   max-width: var(--cMaxWidth);
   width: var(--cWidth);
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 20px 0px;
   margin-bottom: -100px;
   box-sizing: border-box;
@@ -59,9 +59,34 @@
   user-select: none;
   -webkit-user-drag: none;
 }
+.header ul a {
+  display: block;
+  padding: 3px 0;
+}
+@media only screen and (max-width: 499px) {
+  /* Phones: logo on top, links in one row underneath, so the bar stays
+     short and doesn't cover the hero text. */
+  .header {
+    flex-wrap: wrap;
+    padding: 16px 0 6px;
+  }
+  .header ul {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    column-gap: 12px;
+    font-size: 11px;
+  }
+  .header ul a {
+    padding: 8px 0;
+  }
+}
 @media only screen and (min-width: 500px) {
   .header {
     padding: 20px 0px;
+    align-items: center;
   }
   .header ul {
     flex-direction: row;
@@ -75,7 +100,7 @@
     height: 34px;
   }
 }
-@media only screen and (min-width: 900px) {
+@media only screen and (min-width: 1600px) {
   .navbar-connect {
     display: block;
   }
@@ -93,5 +118,22 @@
   }
   .navbar-logo {
     height: 42px;
+  }
+}
+@media only screen and (max-width: 768px), only screen and (max-aspect-ratio: 4/5) {
+  .header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: -12px;
+    left: -50vw;
+    right: -50vw;
+    background-image: linear-gradient(
+      to bottom,
+      var(--backgroundColor) 70%,
+      transparent
+    );
+    pointer-events: none;
+    z-index: -1;
   }
 }

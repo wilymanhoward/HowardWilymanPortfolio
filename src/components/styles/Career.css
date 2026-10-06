@@ -177,7 +177,7 @@
     width: 45%;
   }
 }
-@media only screen and (max-width: 1025px) {
+@media only screen and (max-width: 768px), only screen and (max-aspect-ratio: 4/5) {
   .career-section {
     padding: 70px 0px;
     padding-top: 220px;

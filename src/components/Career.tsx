@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import "./styles/Career.css";
+import { setAllTimeline } from "./utils/GsapScroll";
 
 const projects = [
   {
@@ -36,6 +38,12 @@ const projects = [
 ];
 
 const Career = () => {
+  // Set up the scroll animations right away instead of waiting for the 3D
+  // model, which loads in the background on phones.
+  useEffect(() => {
+    setAllTimeline();
+  }, []);
+
   return (
     <div className="career-section section-container" id="projects">
       <div className="career-container">
