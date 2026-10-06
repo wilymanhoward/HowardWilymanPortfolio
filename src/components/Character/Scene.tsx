@@ -611,7 +611,8 @@ const Scene = () => {
         animationFrameId = requestAnimationFrame(animate);
         if (frameInterval && time - lastFrameTime < frameInterval) return;
         lastFrameTime = time;
-        if (!isCanvasVisible) {
+        // Skip rendering while a project page covers the site.
+        if (!isCanvasVisible || document.body.classList.contains("project-open")) {
           clock.getDelta();
           return;
         }

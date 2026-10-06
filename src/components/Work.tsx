@@ -1,5 +1,6 @@
 ﻿import "./styles/Work.css";
-import WorkImage from "./WorkImage";
+import { projects, projectCover } from "../data/projects";
+import { navigate } from "../router";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -68,23 +69,47 @@ const Work = () => {
           <span>Gallery</span>
         </h2>
         <div className="work-flex">
-          {[...Array(6)].map((_value, index) => (
-            <div className="work-box" key={index}>
-              <div className="work-info">
-                <div className="work-title">
-                  <h3>0{index + 1}</h3>
+          {projects.map((project, index) => {
+            const cover = projectCover(project);
+            const href = `/project/${project.slug}`;
+            return (
+              <a
+                className="work-box"
+                key={project.slug}
+                href={href}
+                data-cursor="disable"
+                onClick={(e) => {
+                  // Let ctrl/cmd-click open a new tab as usual.
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                  e.preventDefault();
+                  navigate(href);
+                }}
+              >
+                <div className="work-info">
+                  <div className="work-title">
+                    <h3>{String(index + 1).padStart(2, "0")}</h3>
 
-                  <div>
-                    <h4>Project Name</h4>
-                    <p>Category</p>
+                    <div>
+                      <h4>{project.title}</h4>
+                      <p>{project.type}</p>
+                    </div>
+                  </div>
+                  <h4>Tools and features</h4>
+                  <p>{project.tags.join(", ")}</p>
+                  <span className="work-view">View project</span>
+                </div>
+                <div className="work-image">
+                  <div className="work-image-in">
+                    {cover ? (
+                      <img src={cover} alt={project.title} loading="lazy" decoding="async" />
+                    ) : (
+                      <div className="work-placeholder">Photos coming soon</div>
+                    )}
                   </div>
                 </div>
-                <h4>Tools and features</h4>
-                <p>Javascript, TypeScript, React, Threejs</p>
-              </div>
-              <WorkImage image="/images/placeholder.webp" alt="" />
-            </div>
-          ))}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>

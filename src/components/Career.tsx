@@ -2,41 +2,7 @@ import { useEffect, useRef } from "react";
 import "./styles/Career.css";
 import { setAllTimeline } from "./utils/GsapScroll";
 import { isMobileLayout } from "./utils/layout";
-
-const projects = [
-  {
-    title: "We Were Mummies",
-    role: "Multiplayer Lead",
-    date: "Jun 2026",
-    tags: ["Unity", "C#", "Networking"],
-    description:
-      "Co-op escape game where one player is blind and the other is deaf. Awarded “Best Game”.",
-  },
-  {
-    title: "AquaStrike",
-    role: "Solo Developer",
-    date: "Jul 2026",
-    tags: ["Unity", "C#"],
-    description:
-      "Online 1v1 water-gun battle in a water-park arena, built end-to-end.",
-  },
-  {
-    title: "CODU",
-    role: "Fullstack Developer",
-    date: "Jul 2026",
-    tags: ["Flutter", "Firebase"],
-    description:
-      "Duolingo-style Android app for learning to code, with live PvP duels.",
-  },
-  {
-    title: "Mixed Reality Museum",
-    role: "Development Assistant",
-    date: "Jul 2026 – Now",
-    tags: ["Unity", "XR Toolkit", "AR Foundation"],
-    description:
-      "18 interactive 3D exhibits for a Master’s MR research project, running on Meta Quest 3.",
-  },
-];
+import { timelineProjects } from "../data/projects";
 
 const Career = () => {
   // Set up the scroll animations right away instead of waiting for the 3D
@@ -82,24 +48,25 @@ const Career = () => {
           <div className="career-timeline" ref={lineRef}>
             <div className="career-dot"></div>
           </div>
-          {projects.map((project) => (
-            <div className="career-info-box" key={project.title}>
+          {timelineProjects.map((project) => (
+            <div className="career-info-box" key={project.slug}>
               <div className="career-info-in">
                 <div className="career-role">
                   <h4>{project.title}</h4>
-                  <h5>{project.role}</h5>
+                  <h5>{project.shortRole ?? project.role ?? project.type}</h5>
                   <div className="career-tags">
-                    {project.tags.map((tag) => (
+                    {(project.shortTags ?? project.tags).map((tag) => (
                       <span key={tag}>{tag}</span>
                     ))}
                   </div>
                 </div>
                 <h3>{project.date}</h3>
               </div>
-              <p>{project.description}</p>
+              <p>{project.summary}</p>
             </div>
           ))}
         </div>
+        <p className="career-more">and many more</p>
       </div>
     </div>
   );

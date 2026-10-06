@@ -37,6 +37,103 @@
   gap: 50px;
   justify-content: start;
 }
+a.work-box {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+}
+a.work-box:focus-visible {
+  outline: 2px solid var(--accentColor);
+  outline-offset: -2px;
+}
+.work-box .work-image-in {
+  width: 100%;
+}
+/* Hover / keyboard focus highlight: a soft accent wash over the panel and
+   an accent line drawn along its top edge, matching the site's blue accent
+   lines (timeline, What I Do cards). Only opacity and transform animate. */
+a.work-box::before,
+a.work-box::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+a.work-box::before {
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(130, 180, 255, 0.09) 0%,
+    rgba(130, 180, 255, 0.03) 55%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+a.work-box::after {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accentColor);
+  box-shadow: 0 0 12px rgba(130, 180, 255, 0.6);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.work-title h3,
+.work-placeholder {
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+a.work-box:focus-visible::before {
+  opacity: 1;
+}
+a.work-box:focus-visible::after {
+  transform: scaleX(1);
+}
+a.work-box:focus-visible .work-title h3 {
+  color: var(--accentColor);
+}
+@media (hover: hover) {
+  a.work-box:hover::before {
+    opacity: 1;
+  }
+  a.work-box:hover::after {
+    transform: scaleX(1);
+  }
+  a.work-box:hover .work-title h3 {
+    color: var(--accentColor);
+  }
+  a.work-box:hover .work-placeholder {
+    border-color: rgba(130, 180, 255, 0.5);
+  }
+}
+.work-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  max-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1px dashed #4a4650;
+  background: #141118;
+  color: #a9a4ab;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.work-view {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #a9a4ab;
+  transition: color 0.3s ease;
+}
+a.work-box:hover .work-view,
+a.work-box:focus-visible .work-view {
+  color: var(--accentColor);
+}
 .work-flex .work-box:nth-child(even) {
   flex-direction: column-reverse;
 }
@@ -62,6 +159,12 @@
 }
 .work-title > div {
   text-align: right;
+}
+.work-title > div h4 {
+  font-size: 26px;
+  line-height: 1.15;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 .work-title h3 {
   font-size: 50px;
@@ -243,5 +346,15 @@
   }
   .work-image img {
     max-height: 220px;
+  }
+}
+@media only screen and (max-width: 1400px) {
+  .work-title > div h4 {
+    font-size: 22px;
+  }
+}
+@media only screen and (max-width: 768px), only screen and (max-aspect-ratio: 4/5) {
+  .work-title > div h4 {
+    font-size: 20px;
   }
 }

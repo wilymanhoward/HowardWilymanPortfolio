@@ -108,6 +108,14 @@
   );
   max-height: 0%;
 }
+.career-more {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: #a9a4ab;
+}
 .career-dot {
   position: absolute;
   bottom: 0;
