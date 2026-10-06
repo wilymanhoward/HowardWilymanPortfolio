@@ -9,7 +9,9 @@
 
 export type ProjectMedia =
   | { type: "image"; src: string; alt: string }
-  | { type: "video"; src: string; poster?: string };
+  | { type: "video"; src: string; poster?: string }
+  /** YouTube video: `id` is the part after "watch?v=" or "youtu.be/". */
+  | { type: "youtube"; id: string; title: string; poster?: string };
 
 export interface Project {
   slug: string;
@@ -208,5 +210,8 @@ export const projectCover = (project: Project) => {
   if (project.cover) return project.cover;
   const first = project.media[0];
   if (!first) return null;
-  return first.type === "image" ? first.src : first.poster ?? null;
+  if (first.type === "image") return first.src;
+  if (first.type === "youtube")
+    return first.poster ?? `https://i.ytimg.com/vi/${first.id}/hqdefault.jpg`;
+  return first.poster ?? null;
 };

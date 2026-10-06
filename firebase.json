@@ -1,0 +1,36 @@
+{
+  "hosting": {
+    "site": "howardw",
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "models/character.glb",
+      "models/character_original.glb",
+      "models/rex_combined.glb",
+      "models/rex_sitting.glb",
+      "models/rex_static.glb",
+      "models/test_eye.glb",
+      "models/rex_eye.png",
+      "models/encrypt.cjs"
+    ],
+    "rewrites": [
+      { "source": "/project/**", "destination": "/index.html" }
+    ],
+    "headers": [
+      {
+        "source": "/assets/**",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      },
+      {
+        "source": "**/*.@(mp4|webp|png|jpg|enc|hdr|wasm|pdf)",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+      },
+      {
+        "source": "/draco/**",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+      }
+    ]
+  }
+}

@@ -35,3 +35,5 @@ character.enc
 public/models/rex_*.glb
 public/models/test_*.glb
 public/models/character_original.glb
+# Firebase
+.firebase/
