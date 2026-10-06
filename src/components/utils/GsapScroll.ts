@@ -217,9 +217,14 @@ export function setAllTimeline() {
       0
     );
 
-  // The line is tied to the list itself, so it draws downward exactly
-  // while the cards scroll through the screen.
-  const lineTimeline = gsap.timeline({
+  sectionTimelines.push(careerTimeline);
+
+  // On mobile the line is driven directly by the scroll position in
+  // Career.tsx so its tip stays locked to the middle of the screen.
+  if (!isMobileLayout()) {
+    // The line is tied to the list itself, so it draws downward exactly
+    // while the cards scroll through the screen.
+    const lineTimeline = gsap.timeline({
       scrollTrigger: {
         trigger: ".career-info",
         start: "top 65%",
@@ -228,20 +233,21 @@ export function setAllTimeline() {
         invalidateOnRefresh: true,
       },
     });
-  lineTimeline
-    .fromTo(
-      ".career-timeline",
-      { maxHeight: "0%" },
-      { maxHeight: "100%", duration: 1, ease: "none" },
-      0
-    )
-    .fromTo(
-      ".career-timeline",
-      { opacity: 0 },
-      { opacity: 1, duration: 0.05, ease: "none" },
-      0
-    );
-  sectionTimelines.push(careerTimeline, lineTimeline);
+    lineTimeline
+      .fromTo(
+        ".career-timeline",
+        { maxHeight: "0%" },
+        { maxHeight: "100%", duration: 1, ease: "none" },
+        0
+      )
+      .fromTo(
+        ".career-timeline",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.05, ease: "none" },
+        0
+      );
+    sectionTimelines.push(lineTimeline);
+  }
 
   // Re-measure every trigger (including the pinned Gallery) now that the
   // page has its final layout; otherwise pins measured during loading keep
