@@ -9,9 +9,7 @@
 
 export type ProjectMedia =
   | { type: "image"; src: string; alt: string }
-  | { type: "video"; src: string; poster?: string }
-  /** YouTube video: `id` is the part after "watch?v=" or "youtu.be/". */
-  | { type: "youtube"; id: string; title: string; poster?: string };
+  | { type: "video"; src: string; poster?: string };
 
 export interface Project {
   slug: string;
@@ -197,6 +195,25 @@ export const projects: Project[] = [
       },
     ],
   },
+  {
+    slug: "lily-and-the-veggies",
+    title: "Lily and the Veggies",
+    type: "2D animation",
+    team: "Team of 4",
+    tags: ["Adobe Animate"],
+    inTimeline: false,
+    summary: "A 2D animated short made in Adobe Animate for an animation class.",
+    overview:
+      "A 2D animated short made in Adobe Animate as an animation class project, by a team of four.",
+    highlights: [],
+    media: [
+      {
+        type: "video",
+        src: "/projects/lily-and-the-veggies/lily-and-the-veggies.mp4",
+        poster: "/projects/lily-and-the-veggies/poster.webp",
+      },
+    ],
+  },
 ];
 
 export const timelineProjects = projects.filter(
@@ -210,8 +227,5 @@ export const projectCover = (project: Project) => {
   if (project.cover) return project.cover;
   const first = project.media[0];
   if (!first) return null;
-  if (first.type === "image") return first.src;
-  if (first.type === "youtube")
-    return first.poster ?? `https://i.ytimg.com/vi/${first.id}/hqdefault.jpg`;
-  return first.poster ?? null;
+  return first.type === "image" ? first.src : first.poster ?? null;
 };

@@ -1,43 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { getProject, projects } from "../data/projects";
 import { navigate } from "../router";
 import { smoother } from "./Navbar";
 import "./styles/ProjectPage.css";
-
-// Shows the poster with a play button and only loads YouTube's player
-// (from the privacy-enhanced youtube-nocookie domain) when clicked.
-const YouTubeEmbed = ({ id, title, poster }: { id: string; title: string; poster?: string }) => {
-  const [playing, setPlaying] = useState(false);
-  if (playing) {
-    return (
-      <div className="project-youtube">
-        <iframe
-          src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`}
-          title={title}
-          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-          allowFullScreen
-        />
-      </div>
-    );
-  }
-  return (
-    <button
-      type="button"
-      className="project-youtube project-youtube-poster"
-      onClick={() => setPlaying(true)}
-      aria-label={`Play video: ${title}`}
-      data-cursor="disable"
-    >
-      <img
-        src={poster ?? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`}
-        alt=""
-        loading="lazy"
-        decoding="async"
-      />
-      <span className="project-youtube-play" aria-hidden="true" />
-    </button>
-  );
-};
 
 interface Props {
   slug: string;
@@ -154,14 +119,7 @@ const ProjectPage = ({ slug, standalone }: Props) => {
               <div className="project-media-empty">Photos and video coming soon</div>
             ) : (
               project.media.map((item) =>
-                item.type === "youtube" ? (
-                  <YouTubeEmbed
-                    key={item.id}
-                    id={item.id}
-                    title={item.title}
-                    poster={item.poster}
-                  />
-                ) : item.type === "image" ? (
+                item.type === "image" ? (
                   <img
                     key={item.src}
                     src={item.src}
@@ -176,7 +134,7 @@ const ProjectPage = ({ slug, standalone }: Props) => {
                     poster={item.poster}
                     controls
                     playsInline
-                    preload="metadata"
+                    preload="none"
                   />
                 )
               )
