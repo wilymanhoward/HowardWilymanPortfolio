@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import type * as THREE from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { isMobileLayout } from "./layout";
@@ -101,10 +101,32 @@ export function setCharTimeline(
     null;
   if (!isMobileLayout()) {
     if (character) {
+      // Slide the character sideways by panning the camera's view inside a
+      // canvas that always fills the screen. (Sliding the canvas itself left
+      // its right edge slicing through the desk.) `view.x` is the shift as a
+      // share of the screen width, to the left.
+      const view = { x: 0 };
+      const applyView = () => {
+        const canvas = document.querySelector<HTMLElement>(".character-model canvas");
+        const w = canvas?.clientWidth;
+        const h = canvas?.clientHeight;
+        if (!w || !h) return;
+        camera.setViewOffset(w, h, view.x * w, 0, w, h);
+        // The glow behind the character and the face's hover area are separate
+        // elements, so they follow the same shift.
+        gsap.set(".character-rim, .character-hover", { x: -view.x * w });
+      };
+
       tl1
         .fromTo(character.rotation, { y: 0 }, { y: 0.7, duration: 1 }, 0)
         .to(camera.position, { z: 22 }, 0)
-        .fromTo(".character-model", { x: 0 }, { x: "-25%", duration: 1 }, 0)
+        .fromTo(view, { x: 0 }, { x: 0.25, duration: 1, onUpdate: applyView }, 0)
+        .fromTo(
+          ".character-model canvas",
+          { "--legs-shift": 0 },
+          { "--legs-shift": 1, duration: 0.3, ease: "none" },
+          0
+        )
         .to([".landing-container", ".landing-decorations"], { opacity: 0, duration: 0.4 }, 0)
         .to([".landing-container", ".landing-decorations"], { y: "40%", duration: 0.8 }, 0)
         .fromTo(".about-me", { y: "-50%" }, { y: "0%" }, 0);
@@ -120,9 +142,10 @@ export function setCharTimeline(
         .fromTo(
           ".character-model",
           { pointerEvents: "inherit" },
-          { pointerEvents: "none", x: "-12%", delay: 2, duration: 5 },
+          { pointerEvents: "none", delay: 2, duration: 5 },
           0
         )
+        .to(view, { x: 0.12, delay: 2, duration: 5, onUpdate: applyView }, 0)
         .to(character.rotation, { y: 0.92, x: 0.12, delay: 3, duration: 3 }, 0);
 
       if (neckBone) {

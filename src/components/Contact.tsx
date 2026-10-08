@@ -53,7 +53,7 @@ const Contact = () => {
               Designed and Developed <br /> by <span>Howard Wilyman</span>
             </h2>
             <h5>
-              <MdCopyright /> 2024
+              <MdCopyright /> 2026
             </h5>
           </div>
         </div>

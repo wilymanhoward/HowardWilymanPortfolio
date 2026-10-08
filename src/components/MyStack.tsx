@@ -4,22 +4,24 @@ import "./styles/MyStack.css";
 const stack = [
   {
     category: "Game Development",
-    main: ["Unity 6", "Unity 2022", "C#", "C++", "C"],
-    more: [
-      "VR / AR / MR",
-      "XR Interaction Toolkit",
-      "AR Foundation",
-      "Meta Quest 3",
-      "Maya",
-      "Photoshop",
-      "Illustrator",
-      "Adobe Audition",
-    ],
+    main: ["Unity 6", "Unity 2022", "Unreal Engine 5", "C#", "C++", "C"],
+    more: ["VR / AR / MR", "XR Interaction Toolkit", "AR Foundation", "Meta Quest 3"],
   },
   {
     category: "Software & App Development",
-    main: ["Flutter", "React Native", "React.js", "Node.js"],
-    more: ["Firebase (Auth, Firestore, Realtime DB)", "Python", "XML"],
+    main: ["Flutter", "React Native", "React.js", "Node.js", "JavaScript", "TypeScript"],
+    more: ["Firebase (Auth, Firestore, Realtime DB)", "MySQL", "Python", "XML"],
+  },
+  {
+    category: "Design & Animation",
+    main: ["Autodesk Maya", "Adobe Animate"],
+    more: [
+      "Photoshop",
+      "Illustrator",
+      "Adobe Audition",
+      "Adobe Lightroom",
+      "Adobe InDesign",
+    ],
   },
   {
     category: "Other Tools",

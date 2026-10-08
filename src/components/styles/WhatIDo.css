@@ -560,3 +560,30 @@
     line-height: 22px;
   }
 }
+
+/* Narrower desktop windows (laptops, tablets, near-square): keep the heading
+   and cards at the outer edges and scale them with the width, leaving a clear
+   middle lane for the character. */
+@media only screen and (min-width: 769px) and (max-width: 1500px) and (min-aspect-ratio: 801/1000) {
+  .what-box:first-child {
+    justify-content: flex-start;
+    padding-left: 3%;
+  }
+  .what-box:last-child {
+    justify-content: flex-end;
+    padding-right: 1%;
+  }
+  .what-box h2 {
+    font-size: clamp(36px, 4.6vw, 72px);
+    line-height: 1.05;
+    margin-right: 0;
+  }
+  .what-box-in {
+    width: clamp(280px, 34vw, 440px);
+    margin-left: 0;
+    gap: 14px;
+  }
+  .what-content h3 {
+    font-size: clamp(20px, 2.4vw, 28px);
+  }
+}

@@ -161,6 +161,21 @@
   position: relative;
   pointer-events: none;
   z-index: 2;
+  /* Landing screen: fade the model out below the keyboard so the desk and
+     legs never show. --legs-top / --legs-fade are set from the camera zoom
+     (resizeUtils.ts); --legs-shift is animated to 1 on scroll, which pushes
+     the line off screen. Without the variables nothing is masked. */
+  --legs-shift: 0;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(var(--legs-top, 300%) + var(--legs-shift) * 140%),
+    transparent calc(var(--legs-top, 300%) + var(--legs-fade, 7%) + var(--legs-shift) * 140%)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(var(--legs-top, 300%) + var(--legs-shift) * 140%),
+    transparent calc(var(--legs-top, 300%) + var(--legs-fade, 7%) + var(--legs-shift) * 140%)
+  );
 }
 .character-img-mobile {
   position: absolute;

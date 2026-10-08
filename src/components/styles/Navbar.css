@@ -63,26 +63,6 @@
   display: block;
   padding: 3px 0;
 }
-@media only screen and (max-width: 499px) {
-  /* Phones: logo on top, links in one row underneath, so the bar stays
-     short and doesn't cover the hero text. */
-  .header {
-    flex-wrap: wrap;
-    padding: 16px 0 6px;
-  }
-  .header ul {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-top: 10px;
-    column-gap: 12px;
-    font-size: 11px;
-  }
-  .header ul a {
-    padding: 8px 0;
-  }
-}
 @media only screen and (min-width: 500px) {
   .header {
     padding: 20px 0px;
@@ -135,5 +115,26 @@
     );
     pointer-events: none;
     z-index: -1;
+  }
+}
+
+@media only screen and (max-width: 620px) {
+  /* Phones: logo on top, links in one row underneath, so the bar stays
+     short and doesn't cover the hero text. */
+  .header {
+    flex-wrap: wrap;
+    padding: 16px 0 6px;
+  }
+  .header ul {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    column-gap: 12px;
+    font-size: 11px;
+  }
+  .header ul a {
+    padding: 8px 0;
   }
 }
