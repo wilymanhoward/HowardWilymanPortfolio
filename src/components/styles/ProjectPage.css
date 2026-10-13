@@ -254,3 +254,51 @@
     margin-top: 64px;
   }
 }
+
+.project-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.project-section .project-credits {
+  gap: 8px;
+}
+.project-award {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.project-section .project-award-title {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #f5f2f6;
+}
+.project-award-cert {
+  margin-top: 14px;
+  width: min(100%, 340px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--accentColor);
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.project-award-cert img {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  transition: transform 0.3s ease;
+}
+.project-award-cert:hover img,
+.project-award-cert:focus-visible img {
+  transform: translateY(-4px);
+}
+@media (max-width: 900px) {
+  .project-section .project-award-title {
+    font-size: 18px;
+  }
+}

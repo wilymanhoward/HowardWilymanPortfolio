@@ -44,11 +44,22 @@ const ProjectPage = ({ slug, standalone }: Props) => {
 
   useEffect(() => {
     const previousTitle = document.title;
-    if (project) document.title = `${project.title} | Howard Wilyman`;
+    // Per-project description and canonical URL for search results.
+    const description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    const previousDescription = description?.content;
+    const previousCanonical = canonical?.href;
+    if (project) {
+      document.title = `${project.title} | Howard Wilyman`;
+      if (description) description.content = `${project.title}: ${project.summary}`;
+      if (canonical) canonical.href = `https://howardw.web.app/project/${project.slug}`;
+    }
     pageRef.current?.scrollTo({ top: 0 });
     backRef.current?.focus({ preventScroll: true });
     return () => {
       document.title = previousTitle;
+      if (description && previousDescription) description.content = previousDescription;
+      if (canonical && previousCanonical) canonical.href = previousCanonical;
     };
   }, [project]);
 
@@ -143,8 +154,23 @@ const ProjectPage = ({ slug, standalone }: Props) => {
 
           <section className="project-section">
             <h2>Overview</h2>
-            <p>{project.overview}</p>
+            <div className="project-paragraphs">
+              {project.overview.split(/\n\s*\n/).map((para) => (
+                <p key={para}>{para}</p>
+              ))}
+            </div>
           </section>
+
+          {project.features && project.features.length > 0 && (
+            <section className="project-section">
+              <h2>{project.featuresTitle ?? "Key features"}</h2>
+              <ul>
+                {project.features.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {project.highlights.length > 0 && (
             <section className="project-section">
@@ -152,6 +178,44 @@ const ProjectPage = ({ slug, standalone }: Props) => {
               <ul>
                 {project.highlights.map((item) => (
                   <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {project.award && (
+            <section className="project-section">
+              <h2>Award</h2>
+              <div className="project-award">
+                <p className="project-award-title">{project.award.title}</p>
+                <p>{project.award.detail}</p>
+                {project.award.image && (
+                  <a
+                    href={project.award.image}
+                    target="_blank"
+                    rel="noopener"
+                    className="project-award-cert"
+                    data-cursor="disable"
+                  >
+                    <img
+                      src={project.award.image}
+                      alt={project.award.imageAlt ?? `${project.award.title} certificate`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span>View certificate</span>
+                  </a>
+                )}
+              </div>
+            </section>
+          )}
+
+          {project.credits && project.credits.length > 0 && (
+            <section className="project-section">
+              <h2>Credits</h2>
+              <ul className="project-credits">
+                {project.credits.map((name) => (
+                  <li key={name}>{name}</li>
                 ))}
               </ul>
             </section>
