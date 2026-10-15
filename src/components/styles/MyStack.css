@@ -87,3 +87,31 @@
     gap: 4px 18px;
   }
 }
+@media only screen and (max-width: 600px) {
+  .stack-section {
+    padding-top: 40px;
+  }
+  .stack-section h2 {
+    font-size: 40px;
+    line-height: 40px;
+    margin-bottom: 32px;
+  }
+  .stack-row {
+    row-gap: 14px;
+    padding: 26px 0;
+  }
+  .stack-row h3 {
+    font-size: 20px;
+    line-height: 26px;
+  }
+  .stack-main {
+    font-size: 22px;
+    line-height: 30px;
+    gap: 2px 16px;
+  }
+  .stack-more {
+    margin-top: 14px !important;
+    font-size: 15px;
+    line-height: 22px;
+  }
+}
