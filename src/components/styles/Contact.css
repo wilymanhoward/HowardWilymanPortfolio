@@ -27,6 +27,9 @@
   margin-bottom: 20px;
 }
 a.contact-social {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 25px;
   border-bottom: 1px solid #ccc;
 }
@@ -88,5 +91,13 @@ a.contact-social {
   }
   .contact-container {
     width: calc(100% - 25px);
+  }
+}
+@media only screen and (max-width: 600px) {
+  .contact-section h3 {
+    font-size: 36px;
+  }
+  a.contact-social {
+    padding: 10px 0;
   }
 }

@@ -63,6 +63,9 @@
   display: block;
   padding: 3px 0;
 }
+.navbar-resume {
+  display: none;
+}
 @media only screen and (min-width: 500px) {
   .header {
     padding: 20px 0px;
@@ -105,12 +108,12 @@
     content: "";
     position: absolute;
     top: 0;
-    bottom: -12px;
+    bottom: -16px;
     left: -50vw;
     right: -50vw;
     background-image: linear-gradient(
       to bottom,
-      var(--backgroundColor) 70%,
+      var(--backgroundColor) calc(100% - 16px),
       transparent
     );
     pointer-events: none;
@@ -123,18 +126,36 @@
      short and doesn't cover the hero text. */
   .header {
     flex-wrap: wrap;
-    padding: 16px 0 6px;
+    padding: 12px 0 2px;
   }
   .header ul {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 4px;
     column-gap: 12px;
     font-size: 11px;
   }
   .header ul a {
     padding: 8px 0;
+  }
+  .navbar-resume {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    padding: 7px 12px;
+    border: 1px solid #363636;
+    border-radius: 999px;
+    font-size: 10px;
+    line-height: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #eae5ec;
+  }
+  .navbar-resume svg {
+    width: 13px;
+    height: 13px;
   }
 }

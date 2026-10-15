@@ -408,7 +408,7 @@ h2.landing-info-h2 {
   .landing-intro {
     position: absolute;
     top: 112px;
-    left: 24px;
+    left: calc((100% - var(--cWidth)) / 2);
     right: auto;
     margin: 0;
     width: auto;
