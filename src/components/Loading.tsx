@@ -11,11 +11,12 @@ const Loading = ({ percent }: { percent: number }) => {
 
   const isMobile = isMobileLayout();
 
-  if (percent >= 100 && !isLoaded) {
-    setTimeout(() => {
-      setIsLoaded(true);
-    }, isMobile ? 350 : 700);
-  }
+  const isDone = percent >= 100;
+  useEffect(() => {
+    if (!isDone) return;
+    const id = setTimeout(() => setIsLoaded(true), isMobile ? 350 : 700);
+    return () => clearTimeout(id);
+  }, [isDone, isMobile]);
 
   useEffect(() => {
     if (isLoaded) {
