@@ -5,27 +5,43 @@ import gsap from "gsap";
 const Cursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    // Touch screens have no pointer to follow.
+    if (!window.matchMedia("(hover: hover)").matches) return;
+
     let hover = false;
     const cursor = cursorRef.current!;
     const mousePos = { x: 0, y: 0 };
     const cursorPos = { x: 0, y: 0 };
+    // quickTo reuses one tween instead of creating a new one every frame.
+    const moveX = gsap.quickTo(cursor, "x", { duration: 0.1 });
+    const moveY = gsap.quickTo(cursor, "y", { duration: 0.1 });
+
+    let animId = 0;
+    const loop = () => {
+      animId = 0;
+      if (hover) return;
+      const delay = 6;
+      cursorPos.x += (mousePos.x - cursorPos.x) / delay;
+      cursorPos.y += (mousePos.y - cursorPos.y) / delay;
+      moveX(cursorPos.x);
+      moveY(cursorPos.y);
+      // Keep easing until the cursor catches up, then sleep until the mouse moves.
+      if (
+        Math.abs(mousePos.x - cursorPos.x) > 0.1 ||
+        Math.abs(mousePos.y - cursorPos.y) > 0.1
+      ) {
+        animId = requestAnimationFrame(loop);
+      }
+    };
+    const wake = () => {
+      if (!animId) animId = requestAnimationFrame(loop);
+    };
     const onMouseMove = (e: MouseEvent) => {
       mousePos.x = e.clientX;
       mousePos.y = e.clientY;
+      wake();
     };
     document.addEventListener("mousemove", onMouseMove);
-
-    let animId: number;
-    const loop = () => {
-      if (!hover) {
-        const delay = 6;
-        cursorPos.x += (mousePos.x - cursorPos.x) / delay;
-        cursorPos.y += (mousePos.y - cursorPos.y) / delay;
-        gsap.to(cursor, { x: cursorPos.x, y: cursorPos.y, duration: 0.1 });
-      }
-      animId = requestAnimationFrame(loop);
-    };
-    animId = requestAnimationFrame(loop);
 
     const cleanupFns: Array<() => void> = [];
 
@@ -50,6 +66,7 @@ const Cursor = () => {
       const onMouseLeave = () => {
         cursor.classList.remove("cursor-disable", "cursor-icons");
         hover = false;
+        wake();
       };
 
       element.addEventListener("mouseenter", onMouseEnter as EventListener);

@@ -11,6 +11,8 @@ interface ParaElement extends HTMLElement {
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother, SplitText);
 
+let refreshListenerAdded = false;
+
 export default function setSplitText() {
   ScrollTrigger.config({ ignoreMobileResize: true });
   if (window.innerWidth < 900) return;
@@ -81,5 +83,10 @@ export default function setSplitText() {
     );
   });
 
-  ScrollTrigger.addEventListener("refresh", () => setSplitText());
+  // Register once: adding a listener on every call doubled the listener count
+  // on each refresh, since each listener calls this function again.
+  if (!refreshListenerAdded) {
+    refreshListenerAdded = true;
+    ScrollTrigger.addEventListener("refresh", setSplitText);
+  }
 }
