@@ -358,3 +358,9 @@ a.work-box:focus-visible .work-view {
     font-size: 20px;
   }
 }
+@media only screen and (max-width: 600px) {
+  .work-section h2 {
+    font-size: 40px;
+    margin: 16px 0 24px;
+  }
+}

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { TbNotes } from "react-icons/tb";
 import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
@@ -59,6 +60,16 @@ const Navbar = () => {
           data-cursor="disable"
         >
           wilymanhoward@gmail.com
+        </a>
+        {/* Phones only: the floating resume button would cover content there. */}
+        <a
+          href="/Howard_Wilyman_Resume.pdf"
+          className="navbar-resume"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View Howard Wilyman Resume (PDF)"
+        >
+          RESUME <TbNotes />
         </a>
         <ul>
           <li>
