@@ -208,7 +208,6 @@ export function setCharTimeline(
           { y: "-100%", duration: 4, ease: "none", delay: 1 },
           0
         )
-        .fromTo(".whatIDO", { y: 0 }, { y: "15%", duration: 2 }, 0)
         .to(character.rotation, { x: -0.04, duration: 2, delay: 1 }, 0);
     }
   }
@@ -224,6 +223,22 @@ export function setAllTimeline() {
     tl.kill();
   });
   sectionTimelines = [];
+
+  // What I Do holds still once its bottom reaches the bottom of the screen,
+  // and My Projects slides up over it like a card (pinSpacing: false lets
+  // the next section scroll on top instead of pushing it away).
+  const whatPin = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".whatIDO",
+      start: "bottom bottom",
+      end: () => `+=${window.innerHeight}`,
+      pin: true,
+      pinSpacing: false,
+      invalidateOnRefresh: true,
+    },
+  });
+  whatPin.to({}, { duration: 1 });
+  sectionTimelines.push(whatPin);
 
   const careerTimeline = gsap.timeline({
     scrollTrigger: {

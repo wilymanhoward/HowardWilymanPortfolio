@@ -10,6 +10,20 @@
   margin: auto;
   margin-bottom: 0;
   padding: 120px 0px 0px;
+  /* Slides up over the held What I Do section, so it needs its own layer
+     (What I Do is z-index 12) and a solid full-width ground. */
+  z-index: 13;
+}
+.career-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background-color: var(--backgroundColor);
+  z-index: -1;
 }
 
 .career-section h2 {
