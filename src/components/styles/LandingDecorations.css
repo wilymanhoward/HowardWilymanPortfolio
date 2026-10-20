@@ -14,6 +14,9 @@
   inset: -20px;
   width: calc(100% + 40px);
   height: calc(100% + 40px);
+  /* Tailwind's base caps videos at 100% width, which left a 20px gap on the
+     right edge; the clip must overhang both sides. */
+  max-width: none;
   object-fit: cover;
   opacity: 0.32;
   filter: blur(3px) saturate(0.7);
