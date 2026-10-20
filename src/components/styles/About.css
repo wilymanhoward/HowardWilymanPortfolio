@@ -1,85 +1,133 @@
+/* About: a far, high view of the character in a dark room, with the
+   section's name set huge along the bottom edge (Prisma-style layout). */
 .about-section {
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  place-items: center;
   position: relative;
-  opacity: 1;
-  height: auto;
   width: var(--cWidth);
+  max-width: 1920px;
   margin: auto;
+  opacity: 1;
 }
+
 .about-me {
-  padding: 50px 0px;
-  padding-bottom: 0;
-  width: 500px;
-  max-width: calc(100% - 15px);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 60px 0 0;
 }
-.about-me h3 {
-  font-size: 25px;
-  text-transform: uppercase;
-  letter-spacing: 7px;
-  font-weight: 400;
+
+.about-title {
+  margin: 0;
+  font-size: 19vw;
+  font-weight: 500;
+  line-height: 0.85;
+  letter-spacing: -0.06em;
+  color: #eae5ec;
+  white-space: nowrap;
+  text-transform: none;
+}
+
+.about-mark {
+  display: inline-block;
+  margin-left: 0.04em;
+  font-size: 0.3em;
+  vertical-align: top;
+  line-height: 1;
   color: var(--accentColor);
 }
 
-.about-me p {
-  font-size: 33px;
-  font-weight: 600;
-  line-height: 36px;
-  letter-spacing: 1px;
+.about-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.about-text {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  color: rgba(234, 229, 236, 0.78);
+}
+
+/* Pill with a round arrow, like the reference; the gap opens on hover. */
+.about-cta {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 10px;
+  padding: 4px 4px 4px 20px;
+  border-radius: 999px;
+  background: #eae5ec;
+  color: #0b080c;
+  font-size: 16px;
+  font-weight: 500;
+  transition: gap 0.3s ease;
+}
+.about-cta:hover {
+  gap: 14px;
+  color: #0b080c;
+}
+.about-cta:focus-visible {
+  outline: 2px solid var(--accentColor);
+  outline-offset: 3px;
+}
+.about-cta-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #0b080c;
+  color: #eae5ec;
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+.about-cta:hover .about-cta-icon {
+  transform: scale(1.1);
+}
+
+/* Desktop: a full screen. The title runs along the bottom-left, the text and
+   button sit bottom-right, and the upper part is left to the 3D character. */
+@media only screen and (min-width: 769px) and (min-aspect-ratio: 801/1000) {
+  /* Above the fixed 3D canvas (z-index 11): from this far back its dark
+     floor covers the bottom of the screen and would hide the text. */
+  .about-section {
+    height: var(--vh);
+    z-index: 12;
+  }
+  /* Clear of the fixed social icons on the left edge. */
+  .about-me {
+    position: absolute;
+    left: 56px;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    align-items: end;
+    gap: 32px;
+    padding: 0 0 4vh;
+  }
+  .about-title {
+    font-size: 13.5vw;
+  }
+  .about-side {
+    padding-bottom: 2vh;
+  }
+  .about-text {
+    font-size: clamp(15px, 1.15vw, 20px);
+  }
 }
 
 @media only screen and (max-width: 600px) {
   .about-me {
     padding-top: 24px;
   }
-  .about-me p {
-    font-size: 20px;
-    line-height: 28px;
+  .about-title {
+    font-size: 21vw;
   }
-}
-
-@media only screen and (min-width: 600px) {
-  .about-section {
-    justify-content: center;
-  }
-}
-@media only screen and (min-width: 768px) {
-  .about-me {
-    width: 500px;
-    max-width: calc(100% - 70px);
-    transform: translateY(0%);
-  }
-  .about-section {
-    opacity: 1;
-  }
-}
-@media only screen and (min-width: 769px) and (min-aspect-ratio: 801/1000) {
-  .about-section {
-    width: var(--cWidth);
-    justify-content: flex-end;
-    max-width: 1920px;
-    height: var(--vh);
-    padding: 0px;
-    opacity: 1;
-  }
-  .about-me {
-    padding: 0px;
-    width: 50%;
-    flex: 0 0 50%;
-    max-width: 50%;
-    min-width: 480px;
-  }
-  .about-me p {
-    font-size: 1.9vw;
-    line-height: 2.5vw;
-    width: 100%;
-  }
-}
-@media only screen and (min-width: 1950px) {
-  .about-me p {
-    font-size: 2.5rem;
-    line-height: 2.7rem;
+  .about-text {
+    font-size: 16px;
   }
 }

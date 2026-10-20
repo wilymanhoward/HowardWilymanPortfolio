@@ -1,117 +1,38 @@
 .landing-decorations {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   pointer-events: none;
   z-index: 5;
   overflow: hidden;
+  background: var(--backgroundColor);
 }
 
-/* ── RADIANT COSMIC AURORA GLOW BEHIND CHARACTER ─────── */
-.landing-character-aura {
+/* Game footage as a dark, soft backdrop: dimmed, slightly blurred and
+   desaturated so the character and the name stay in front. */
+.landing-bg-video {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
+  inset: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  object-fit: cover;
+  opacity: 0.32;
+  filter: blur(3px) saturate(0.7);
+  /* Blend the clip's bottom edge into the page instead of a hard cut. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
+  mask-image: linear-gradient(to bottom, #000 65%, transparent);
 }
 
-.aura-core {
+.landing-bg-shade {
   position: absolute;
-  top: 74%;
-  left: 50%;
-  width: 1150px;
-  height: 650px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse 65% 55% at 50% 55%,
-      rgba(79, 140, 255, 0.65) 0%,
-      rgba(56, 189, 248, 0.4) 28%,
-      rgba(129, 140, 248, 0.22) 50%,
-      rgba(168, 85, 247, 0.12) 68%,
-      transparent 82%);
-  transform: translate(-50%, -50%);
-  filter: blur(70px);
-  opacity: 0.9;
-  animation: auraCorePulse 6s ease-in-out infinite alternate;
+  inset: 0;
+  background: rgba(11, 8, 12, 0.45);
 }
 
-.aura-beam-left {
-  position: absolute;
-  top: 68%;
-  left: calc(50% - 440px);
-  width: 540px;
-  height: 300px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse 55% 42% at 50% 50%,
-      rgba(56, 189, 248, 0.45) 0%,
-      rgba(79, 140, 255, 0.25) 45%,
-      transparent 78%);
-  transform: rotate(-15deg);
-  filter: blur(60px);
-  opacity: 0.85;
-  animation: auraBeamLeft 7s ease-in-out infinite alternate;
-}
-
-.aura-beam-right {
-  position: absolute;
-  top: 68%;
-  right: calc(50% - 440px);
-  width: 540px;
-  height: 300px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse 55% 42% at 50% 50%,
-      rgba(168, 85, 247, 0.45) 0%,
-      rgba(129, 140, 248, 0.25) 45%,
-      transparent 78%);
-  transform: rotate(15deg);
-  filter: blur(60px);
-  opacity: 0.85;
-  animation: auraBeamRight 7s ease-in-out 1s infinite alternate;
-}
-
-@keyframes auraCorePulse {
-  0% {
-    transform: translate(-50%, -50%) scale(0.96);
-    opacity: 0.8;
-  }
-
-  100% {
-    transform: translate(-50%, -50%) scale(1.04);
-    opacity: 0.98;
-  }
-}
-
-@keyframes auraBeamLeft {
-  0% {
-    transform: rotate(-24deg) scale(0.95);
-    opacity: 0.7;
-  }
-
-  100% {
-    transform: rotate(-24deg) scale(1.05);
-    opacity: 0.9;
-  }
-}
-
-@keyframes auraBeamRight {
-  0% {
-    transform: rotate(24deg) scale(0.95);
-    opacity: 0.7;
-  }
-
-  100% {
-    transform: rotate(24deg) scale(1.05);
-    opacity: 0.9;
-  }
-}
-
-/* Hide on mobile / tablet to prevent crowding */
 @media screen and (max-width: 768px), screen and (max-aspect-ratio: 4/5) {
   .landing-decorations {
-    display: none !important;
+    z-index: 0;
+  }
+  .landing-bg-video {
+    opacity: 0.28;
   }
 }

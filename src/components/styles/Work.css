@@ -61,12 +61,7 @@ a.work-box::after {
 }
 a.work-box::before {
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(130, 180, 255, 0.09) 0%,
-    rgba(130, 180, 255, 0.03) 55%,
-    transparent 100%
-  );
+  background: rgba(130, 180, 255, 0.05);
   opacity: 0;
   transition: opacity 0.35s ease;
 }
