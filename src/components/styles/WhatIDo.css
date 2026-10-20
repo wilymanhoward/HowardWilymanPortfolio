@@ -171,8 +171,8 @@
   outline-offset: 3px;
 }
 
-/* Phones and portrait screens: no 3D here, so the photo leads and the two
-   columns stack. */
+/* Phones and portrait screens: just the two columns, stacked; no head
+   render or photo. */
 @media only screen and (max-width: 768px), only screen and (max-aspect-ratio: 4/5) {
   .whatIDO {
     min-height: auto;
@@ -180,15 +180,7 @@
     padding: 72px 0 40px;
   }
   .what-portrait {
-    position: relative;
-    top: auto;
-    right: auto;
-    align-self: flex-end;
-    height: auto;
-    width: 64%;
-    max-width: 340px;
-    margin-right: -10%;
-    margin-bottom: 24px;
+    display: none;
   }
   .what-head {
     display: none;
