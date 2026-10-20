@@ -327,6 +327,61 @@ export const projects: Project[] = [
       },
     ],
   },
+  {
+    slug: "deskdeck",
+    title: "DeskDeck",
+    role: "Android Developer",
+    date: "Oct 2026",
+    type: "Android tablet music dashboard",
+    tags: ["Kotlin", "Jetpack Compose", "Android", "Room"],
+    inTimeline: false,
+    summary:
+      "A tablet music dashboard with synced lyrics, media controls, Standby and a morning brief.",
+    overview:
+      "DeskDeck turns an Android tablet into a music dashboard for a desk or bedside table. It brings album artwork, playback controls, lyrics and everyday information into a landscape interface, with colours drawn from the current album cover. The project is built in Kotlin with Jetpack Compose and Material 3, with a minimum Android version of 8.0.\n\nInstead of playing music itself, DeskDeck follows the media sessions published by other apps, such as Spotify, YouTube Music and Apple Music. A pinned sidebar lets users switch the player they are controlling, while the main screen offers playback, seeking and volume controls. Available commands depend on what each player exposes. Notification access is required to connect to those sessions and show notifications within the dashboard.\n\nLyrics come from LRCLIB and are cached locally for repeat listening. Users can tap a lyric line to seek, adjust the timing for a song and compensate for audio-output delay. Enhanced LRC lyrics retain their supplied word timestamps; other synced lyrics receive estimated word timings. The interface adapts from the full dashboard to a smaller split-screen layout and a compact mini-player as its window changes size.\n\nFor longer desk sessions, DeskDeck includes idle dimming, pixel shifting and an ambient display mode. Standby can show a dim clock, the next alarm and music controls while the app is on screen. A scheduled morning brief brings together weather, a configurable market watchlist and headlines. Optional Spotify library browsing requires its own setup and sign-in; market data also requires configuration.",
+    features: [
+      "Controls compatible Android media sessions: now playing, album artwork, seeking, volume and supported shuffle / repeat commands.",
+      "Time-synced lyrics with line seeking, per-song timing adjustments, offline caching and optional romanization on Android 10 and later.",
+      "Full, split-screen and compact mini-player layouts selected from the available window size.",
+      "Pinned music sources, notification banners and an in-app notification panel.",
+      "WhatsApp incoming-call and ongoing-call cards using the actions supplied by WhatsApp. Music that DeskDeck pauses for a call can be resumed afterwards.",
+      "Standby with clock faces, scheduled hours, next-alarm information and music controls while DeskDeck is open.",
+      "Morning Brief with weather, market watchlist and headlines, keeping cached data when an individual source fails.",
+      "Pixel shifting, brightness limits, idle dimming and ambient display options, plus support for Android's reduced-animation setting.",
+    ],
+    highlights: [
+      "Built a native tablet interface with Jetpack Compose and Material 3, using MVVM, StateFlow, coroutines and Hilt to connect the UI to application state.",
+      "Integrated Android MediaSession and MediaController callbacks to follow active players, switch sources and keep playback controls in sync.",
+      "Implemented cache-first lyrics retrieval from LRCLIB with Room storage, track matching, LRC parsing and word-timing estimation.",
+      "Developed adaptive layouts and display-state rules for active use, idle dimming, ambient mode and Standby.",
+      "Integrated weather, market and RSS data for the morning brief, with cached results and scheduled background refresh through WorkManager.",
+      "Added optional Spotify authorization using PKCE and Android Keystore-backed token encryption, alongside notification and WhatsApp call integration.",
+      "Wrote unit tests for logic including lyric parsing and matching, media-session selection, call transitions, adaptive sizing and display schedules.",
+    ],
+    cover: "/projects/deskdeck/icon.webp",
+    media: [
+      {
+        type: "video",
+        src: "/projects/deskdeck/trailer.mp4",
+        poster: "/projects/deskdeck/trailer-poster.webp",
+      },
+      {
+        type: "image",
+        src: "/projects/deskdeck/lyrics.webp",
+        alt: "DeskDeck dashboard: the sidebar with music sources, the now-playing card with album art and controls, and time-synced lyrics filling in word by word",
+      },
+      {
+        type: "image",
+        src: "/projects/deskdeck/sources.webp",
+        alt: "DeskDeck switched to YouTube Music, with the background colours taken from the new album art",
+      },
+      {
+        type: "image",
+        src: "/projects/deskdeck/settings.webp",
+        alt: "DeskDeck settings for screen and burn-in: keep screen on, pixel shift and dim when idle",
+      },
+    ],
+  },
 ];
 
 export const timelineProjects = projects.filter(
