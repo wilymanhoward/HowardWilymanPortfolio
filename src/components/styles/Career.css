@@ -17,11 +17,7 @@
   line-height: 70px;
   font-weight: 400;
   text-align: center;
-  background: linear-gradient(0deg, #3b82f6, #ffffff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #eae5ec;
   margin-top: 50px;
   margin-bottom: 90px;
 }
@@ -100,12 +96,7 @@
   transform: translateX(-50%);
   width: 3px;
   height: 100%;
-  background-image: linear-gradient(
-    to top,
-    #3b82f6 20%,
-    var(--accentColor) 50%,
-    transparent 95%
-  );
+  background-color: var(--accentColor);
   max-height: 0%;
 }
 .career-more {

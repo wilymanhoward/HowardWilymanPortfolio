@@ -291,6 +291,9 @@ const Scene = () => {
       );
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1;
+      // Only the screen light casts shadows (see addScreenLight).
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       canvasDiv.current.querySelectorAll("canvas").forEach((c) => c.remove());
       canvasDiv.current.appendChild(renderer.domElement);
 
@@ -397,6 +400,12 @@ const Scene = () => {
             const name = (child.name || "").toLowerCase();
             const matName = (child.material?.name || "").toLowerCase();
 
+            // The skin and clothes use fabric sheen, which picks up the pink
+            // tones of the environment map as a glow along every edge.
+            if (child.material && "sheen" in child.material) {
+              child.material.sheen = 0;
+            }
+
             // Black hair:
             if (name.includes("hair") || matName.includes("hair")) {
               if (child.material) {
@@ -489,12 +498,13 @@ const Scene = () => {
           // ─────────────────────────────────────────────────────────────────
 
           screenLight = character.getObjectByName("screenlight") || null;
+          if (!isMobile) light.addScreenLight(character);
           if (progress) {
+            // Lights come up while the loader finishes, so the character is
+            // never an unlit silhouette against the footage behind him.
+            light.turnOnLights();
             progress.loaded().then(() => {
-              setTimeout(() => {
-                light.turnOnLights();
-                animations.startIntro();
-              }, 2500);
+              setTimeout(() => animations.startIntro(), 600);
             });
           } else {
             light.turnOnLights();
