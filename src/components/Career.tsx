@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import "./styles/Career.css";
 import { setAllTimeline } from "./utils/GsapScroll";
-import { isMobileLayout } from "./utils/layout";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { timelineProjects } from "../data/projects";
+import { navigate } from "../router";
 
 const Career = () => {
   // Set up the scroll animations right away instead of waiting for the 3D
@@ -11,30 +12,51 @@ const Career = () => {
     setAllTimeline();
   }, []);
 
-  // Mobile: grow the line straight from the scroll position so its glowing
-  // tip stays locked to the middle of the screen. Measured live on every
-  // scroll, so it stays correct when cards above open and close.
   const infoRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
+    const info = infoRef.current;
+    const line = lineRef.current;
+    if (!info || !line) return;
+    const rows = Array.from(info.querySelectorAll<HTMLElement>(".career-info-box"));
+    let active = -1;
     const update = () => {
-      const info = infoRef.current;
-      const line = lineRef.current;
-      if (!info || !line || !isMobileLayout()) return;
       const rect = info.getBoundingClientRect();
-      // The line starts 50px above the list (top: -50px in Career.css).
-      const lineTop = rect.top - 50;
-      const fill = (window.innerHeight / 2 - lineTop) / rect.height;
-      const clamped = Math.min(1, Math.max(0, fill));
-      line.style.maxHeight = `${clamped * 100}%`;
-      line.style.opacity = clamped > 0 ? "1" : "0";
+      const midpoint = window.innerHeight / 2;
+      const start = parseFloat(getComputedStyle(info).getPropertyValue("--timeline-start"));
+      const length = Math.max(0, rect.height - start);
+      const distance = Math.max(0, Math.min(length, midpoint - rect.top - start));
+      line.style.transform = `scaleY(${length ? distance / length : 0})`;
+      info.style.setProperty("--marker-y", `${start + distance}px`);
+      moreRef.current?.classList.toggle("is-reached", distance >= length - 1);
+      let nearest = 0;
+      let nearestDistance = Infinity;
+      rows.forEach((row, index) => {
+        const bounds = row.getBoundingClientRect();
+        const offset = Math.abs(bounds.top + bounds.height / 2 - midpoint);
+        if (offset < nearestDistance) {
+          nearest = index;
+          nearestDistance = offset;
+        }
+      });
+      if (active !== nearest) {
+        rows.forEach((row, index) => row.classList.toggle("is-active", index === nearest));
+        active = nearest;
+      }
     };
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
+    info.classList.add("spotlight-ready");
+    const trigger = ScrollTrigger.create({
+      trigger: info,
+      start: "top bottom",
+      end: "bottom top",
+      onUpdate: update,
+      onRefresh: update,
+    });
     update();
     return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      trigger.kill();
+      info.classList.remove("spotlight-ready");
     };
   }, []);
 
@@ -45,14 +67,30 @@ const Career = () => {
           My <span>Projects</span>
         </h2>
         <div className="career-info" ref={infoRef}>
-          <div className="career-timeline" ref={lineRef}>
-            <div className="career-dot"></div>
-          </div>
+          <div className="career-timeline" ref={lineRef} aria-hidden="true" />
+          <div className="career-dot" aria-hidden="true" />
           {timelineProjects.map((project) => (
             <div className="career-info-box" key={project.slug}>
               <div className="career-info-in">
                 <div className="career-role">
-                  <h4>{project.title}</h4>
+                  <h4>
+                    <a
+                      className="career-project-link"
+                      aria-label={project.title}
+                      href={`/project/${project.slug}`}
+                      data-cursor="disable"
+                      onClick={(e) => {
+                        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                        e.preventDefault();
+                        navigate(`/project/${project.slug}`);
+                      }}
+                    >
+                      <span className="career-title-roll" aria-hidden="true">
+                        <span>{project.title}</span>
+                        <span>{project.title}</span>
+                      </span>
+                    </a>
+                  </h4>
                   <h5>{project.shortRole ?? project.role ?? project.type}</h5>
                   <div className="career-tags">
                     {(project.shortTags ?? project.tags).map((tag) => (
@@ -66,7 +104,7 @@ const Career = () => {
             </div>
           ))}
         </div>
-        <p className="career-more">and many more</p>
+        <p className="career-more" ref={moreRef}>and many more</p>
       </div>
     </div>
   );

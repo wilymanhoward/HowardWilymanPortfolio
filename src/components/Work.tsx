@@ -73,41 +73,43 @@ const Work = () => {
             const cover = projectCover(project);
             const href = `/project/${project.slug}`;
             return (
-              <a
-                className="work-box"
-                key={project.slug}
-                href={href}
-                data-cursor="disable"
-                onClick={(e) => {
-                  // Let ctrl/cmd-click open a new tab as usual.
-                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-                  e.preventDefault();
-                  navigate(href);
-                }}
-              >
-                <div className="work-info">
-                  <div className="work-title">
-                    <h3>{String(index + 1).padStart(2, "0")}</h3>
+              <div className="work-box" key={project.slug}>
+                <a
+                  className="work-entry"
+                  href={href}
+                  data-cursor="disable"
+                  onClick={(e) => {
+                    // Let ctrl/cmd-click open a new tab as usual.
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                    e.preventDefault();
+                    navigate(href);
+                  }}
+                >
+                  <div className="work-info">
+                    <div className="work-title">
+                      <h3>{String(index + 1).padStart(2, "0")}</h3>
 
-                    <div>
-                      <h4>{project.title}</h4>
-                      <p>{project.type}</p>
+                      <div>
+                        <h4>{project.title}</h4>
+                        <p>{project.type}</p>
+                      </div>
+                    </div>
+                    <h4>Tools and features</h4>
+                    <p>{project.tags.join(", ")}</p>
+                    <span className="work-view">View project</span>
+                  </div>
+                  <div className="work-image">
+                    <div className="work-image-in">
+                      {cover ? (
+                        <img src={cover} alt={project.title} loading="lazy" decoding="async" />
+                      ) : (
+                        <div className="work-placeholder">Photos coming soon</div>
+                      )}
                     </div>
                   </div>
-                  <h4>Tools and features</h4>
-                  <p>{project.tags.join(", ")}</p>
-                  <span className="work-view">View project</span>
-                </div>
-                <div className="work-image">
-                  <div className="work-image-in">
-                    {cover ? (
-                      <img src={cover} alt={project.title} loading="lazy" decoding="async" />
-                    ) : (
-                      <div className="work-placeholder">Photos coming soon</div>
-                    )}
-                  </div>
-                </div>
-              </a>
+                </a>
+
+              </div>
             );
           })}
         </div>

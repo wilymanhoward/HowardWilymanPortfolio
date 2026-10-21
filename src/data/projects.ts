@@ -19,6 +19,7 @@ export interface Project {
   date?: string;
   type: string;
   team?: string;
+  github?: string;
   /** Set to false for Gallery-only work that isn't in "My Projects". */
   inTimeline?: boolean;
   tags: string[];
@@ -50,6 +51,7 @@ export interface Project {
 export const projects: Project[] = [
   {
     slug: "we-were-mummies",
+    github: "https://github.com/wilymanhoward/We-Were-Mummies",
     title: "We Were Mummies",
     role: "Player & Multiplayer Lead",
     shortRole: "Multiplayer Lead",
@@ -86,6 +88,7 @@ export const projects: Project[] = [
   },
   {
     slug: "aquastrike",
+    github: "https://github.com/wilymanhoward/AquaStrike",
     title: "AquaStrike",
     role: "Solo Developer",
     date: "Jul 2026",
@@ -132,6 +135,7 @@ export const projects: Project[] = [
   },
   {
     slug: "codu",
+    github: "https://github.com/NelsenKeane/Codu",
     title: "CODU",
     role: "Fullstack Developer",
     date: "Jul 2026",
@@ -175,9 +179,10 @@ export const projects: Project[] = [
   },
   {
     slug: "mixed-reality-museum",
+    github: "https://github.com/wilymanhoward/Museum-Exploration-MR",
     title: "Mixed Reality Museum",
     role: "Development Assistant",
-    date: "Jul 2026 – Now",
+    date: "Oct 2026",
     type: "Master’s research project",
     team: "Solo build",
     tags: ["Unity", "XR Interaction Toolkit", "AR Foundation"],
@@ -329,6 +334,7 @@ export const projects: Project[] = [
   },
   {
     slug: "deskdeck",
+    github: "https://github.com/wilymanhoward/DeskDeck",
     title: "DeskDeck",
     role: "Android Developer",
     date: "Oct 2026",

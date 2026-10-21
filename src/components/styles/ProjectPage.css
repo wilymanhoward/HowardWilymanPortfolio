@@ -302,3 +302,19 @@
     font-size: 18px;
   }
 }
+
+.project-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  box-sizing: border-box;
+  margin-top: 24px;
+  text-decoration: none;
+}
+
+.project-github svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}

@@ -1,0 +1,19 @@
+My portfolio is live: howardw.web.app
+
+I'm a Digital Media Technology student looking for a game development internship. Instead of only sending a PDF, I built a site that shows how I work.
+
+What's inside:
+• A 3D version of me that follows your cursor, with the camera moving as you scroll (React, Three.js and GSAP)
+• 8 projects across games, apps, XR and animation
+• Sea Vagabond, a Unity adventure game my team of six built. It won Best Creative Third-Person Action-Adventure Game at EGDAD-XMUM 2025
+• Mixed Reality Museum: 18 interactive museum exhibits for Meta Quest 3
+• We Were Mummies, a co-op escape game where one player is blind and the other is deaf. I led the multiplayer, and it was awarded "Best Game"
+• DeskDeck, an Android tablet music dashboard with time-synced lyrics
+
+I mostly work in Unity and C#, with Maya for 3D and React for the web.
+
+I'm open to internships in game development, gameplay programming or interactive software. If your team is hiring, or you know someone who is, I'd love to connect. Feedback on the site is welcome too.
+
+🔗 howardw.web.app
+
+#GameDevelopment #GameDev #Unity #Internship #OpenToWork #Portfolio #ThreeJS

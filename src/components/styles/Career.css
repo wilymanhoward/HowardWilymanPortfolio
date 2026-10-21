@@ -40,6 +40,7 @@
   font-weight: 300;
 }
 .career-info {
+  --timeline-start: 18.5px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -103,15 +104,79 @@
   margin: 10px 0px;
   color: var(--accentColor);
 }
+.career-project-link {
+  display: block;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+}
+.career-title-roll {
+  display: block;
+  position: relative;
+  transition: transform 0.3s;
+}
+.career-title-roll > span {
+  display: block;
+}
+.career-title-roll > span + span {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  color: var(--accentColor);
+}
+.career-project-link:hover .career-title-roll,
+.career-project-link:focus-visible .career-title-roll {
+  transform: translateY(-100%);
+}
+.career-project-link:focus-visible {
+  outline: 2px solid var(--accentColor);
+  outline-offset: 5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .career-title-roll {
+    transition: none;
+  }
+}
 .career-timeline {
   position: absolute;
-  top: -50px;
+  top: var(--timeline-start);
   left: 50%;
+  width: 2px;
+  height: calc(100% - var(--timeline-start));
+  margin-left: -1px;
+  pointer-events: none;
+}
+.career-timeline {
+  background: var(--accentColor);
+  transform: scaleY(0);
+  transform-origin: top;
+}
+.career-info-box { position: relative; }
+.career-info-box::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--timeline-start) - 4.5px);
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  box-sizing: border-box;
   transform: translateX(-50%);
-  width: 3px;
-  height: 100%;
-  background-color: var(--accentColor);
-  max-height: 0%;
+  background: #716b78;
+  border: 1px solid var(--backgroundColor);
+  border-radius: 50%;
+  transition: transform 0.3s, background-color 0.3s;
+}
+.spotlight-ready .career-info-box > * {
+  opacity: 0.55;
+  transition: opacity 0.3s;
+}
+.spotlight-ready .career-info-box.is-active > *,
+.spotlight-ready .career-info-box:focus-within > * { opacity: 1; }
+.career-info-box.is-active .career-project-link { color: var(--accentColor); }
+.career-info-box.is-active::before {
+  background: var(--accentColor);
+  transform: translateX(-50%) scale(1.5);
 }
 .career-more {
   margin: 10px 0 0;
@@ -120,47 +185,47 @@
   font-weight: 300;
   letter-spacing: 1px;
   color: #a9a4ab;
+  transition: color 0.4s ease, transform 0.4s ease;
+}
+.career-more::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 2px;
+  margin: 12px auto 0;
+  background: var(--accentColor);
+  transform: scaleX(0);
+  opacity: 0;
+  transition: transform 0.45s ease, opacity 0.3s ease;
+}
+.career-more.is-reached {
+  color: var(--accentColor);
+  transform: translateY(-3px);
+}
+.career-more.is-reached::after {
+  transform: scaleX(1);
+  opacity: 1;
 }
 .career-dot {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 50%;
-  transform: translate(-50%, 50%);
-  background-color: #3b82f6;
   width: 10px;
   height: 10px;
-  border-radius: 50px;
-  box-shadow: 0px 0px 5px 2px #4f8cff, 0px 0px 15px 8px #2563eb,
-    0px 0px 110px 20px #93c5fd;
-  animation: timeline 0.8s linear infinite forwards;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--accentColor);
+  box-shadow: 0 0 12px rgba(130, 180, 255, 0.6);
+  transform: translateY(var(--marker-y, 0px));
+  pointer-events: none;
 }
-
-@keyframes timeline {
-  10%,
-  20%,
-  50%,
-  70%,
-  90% {
-    box-shadow: 0px 0px 5px 2px #4f8cff;
-  }
-  10%,
-  30%,
-  0%,
-  100%,
-  64%,
-  80% {
-    box-shadow: 0px 0px 5px 2px #4f8cff, 0px 0px 15px 5px #2563eb,
-      0px 0px 110px 20px #93c5fd;
-  }
-}
-@keyframes timeline2 {
-  0% {
-    box-shadow: 0px 0px 5px 2px #4f8cff;
-  }
-  100% {
-    box-shadow: 0px 0px 5px 2px #4f8cff, 0px 0px 15px 5px #2563eb,
-      0px 0px 110px 20px #93c5fd;
-  }
+@media (prefers-reduced-motion: reduce) {
+  .career-more,
+  .career-more::after { transition: none; }
+  .career-more.is-reached { transform: none; }
+  .spotlight-ready .career-info-box > * { opacity: 1; transition: none; }
+  .career-info-box::before { transition: none; }
+  .career-dot { display: none; }
 }
 @media only screen and (max-width: 1400px) {
   .career-section h2 {
@@ -210,7 +275,9 @@
     padding-left: 10%;
     box-sizing: border-box;
   }
-  .career-timeline {
+  .career-timeline,
+  .career-dot,
+  .career-info-box::before {
     left: 0%;
   }
   .career-container {
