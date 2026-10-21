@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { FaGithub } from "react-icons/fa";
 import { getProject, projects } from "../data/projects";
 import { navigate } from "../router";
 import { smoother } from "./Navbar";
@@ -124,6 +125,19 @@ const ProjectPage = ({ slug, standalone }: Props) => {
               <span key={tag}>{tag}</span>
             ))}
           </div>
+
+          {project.github && (
+            <a
+              className="project-back project-github"
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${project.title} on GitHub (opens in a new tab)`}
+              data-cursor="disable"
+            >
+              View on <FaGithub aria-hidden="true" /> GitHub
+            </a>
+          )}
 
           <section className="project-media" aria-label="Media">
             {project.media.length === 0 ? (
