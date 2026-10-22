@@ -50,6 +50,39 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: "mr-detective",
+    title: "Co-located MR Detective",
+    role: "Developer & Researcher",
+    shortRole: "Developer",
+    date: "2026",
+    type: "Final Year Project, mixed reality game",
+    team: "Solo",
+    tags: ["Unity", "C#", "Meta Quest 3", "Netcode for GameObjects", "Meta XR SDK"],
+    shortTags: ["Unity", "C#", "Quest 3", "Netcode"],
+    summary:
+      "My final year project: a two-player detective game in mixed reality, built to study how teams solve problems in the same room.",
+    overview:
+      "Co-located MR Detective is my Final Year Project. Two players wear Meta Quest 3 headsets in the same physical room and see the same virtual crime scene in the same real spot, with passthrough so they can still see each other and the room around them. They search for clues with their bare hands, tag evidence, and use an evidence board to name the culprit.\n\nThe game is also a research tool for an HCI user study. It compares solving a case alone with solving it as a team of two, using two different cases of equal difficulty: “The Missing Design Award”, set in a design studio, and “The Missing Keris”, set in a heritage gallery. The game records completion time, contamination errors (touching or stepping into evidence that should be left alone), reasoning errors, and the position of the head and hands at 10 Hz.\n\nBoth headsets stay lined up through Shared Spatial Anchors and Meta's colocation session, with game state synced over Netcode for GameObjects on the local network. Participants use hand tracking only, and the experimenter sets up and runs each session from an in-headset control panel.\n\nThe game is built and I'm now preparing the user study. Screenshots and a video are coming soon.",
+    features: [
+      "Two headsets, one shared scene: players see the crime scene in the same spot of the real room, using Shared Spatial Anchors and colocation.",
+      "Hand-tracked interaction through the Meta Interaction SDK: grab clues, inspect them and tag them for the evidence board.",
+      "Two matched detective cases, each with four suspects, seven clues (four key pieces of evidence and three red herrings) and three exclusion zones.",
+      "An evidence board where players pick a suspect and the evidence behind their answer, shared live between both players in team runs.",
+      "A briefing from an animated Inspector Hart character, with voice lines and procedural gestures, synchronised on both headsets.",
+      "Depth-based occlusion so virtual props sit behind real hands and furniture.",
+      "Study tooling: an in-headset setup panel, a 10 Hz CSV log, per-run summary files, and automatic upload of results to a laptop on the local network.",
+    ],
+    highlights: [
+      "Designed and built the whole system solo, from the Unity project and networking to the study procedure and data logging.",
+      "Implemented colocated multiplayer: a Netcode for GameObjects host and client, discovery through Meta's colocation session, and a shared spatial anchor that places the scene in the same physical spot on both headsets.",
+      "Kept game state in one place (a single CaseState) and wrote the core logic as plain C# classes covered by EditMode tests, so the study measures are deterministic and testable.",
+      "Built the measures for the study: completion time, contamination errors counted as zone entries with a cooldown, reasoning errors, and head and hand tracking logged relative to the scene.",
+      "Modelled the props and characters in Maya with a Python script, using low-poly flat shading and a shared palette texture, about 15,000 triangles across both cases.",
+      "Targeted a stable 72 fps on Quest 3 with a lightweight URP setup, and fixed headset-only problems such as floor height differences between two headsets and clues that froze in the partner's view.",
+    ],
+    media: [],
+  },
+  {
     slug: "we-were-mummies",
     github: "https://github.com/wilymanhoward/We-Were-Mummies",
     title: "We Were Mummies",
