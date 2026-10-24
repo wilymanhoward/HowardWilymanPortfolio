@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaGlobe } from "react-icons/fa";
 import { getProject, projects } from "../data/projects";
 import { navigate } from "../router";
 import { smoother } from "./Navbar";
@@ -126,16 +126,22 @@ const ProjectPage = ({ slug, standalone }: Props) => {
             ))}
           </div>
 
-          {project.github && (
+          {(project.website || project.github) && (
             <a
               className="project-back project-github"
-              href={project.github}
+              href={project.website ?? project.github}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`View ${project.title} on GitHub (opens in a new tab)`}
+              aria-label={project.website
+                ? `Open ${project.title} website (opens in a new tab)`
+                : `View ${project.title} on GitHub (opens in a new tab)`}
               data-cursor="disable"
             >
-              View on <FaGithub aria-hidden="true" /> GitHub
+              {project.website ? (
+                <>Open website <FaGlobe aria-hidden="true" /></>
+              ) : (
+                <>View on <FaGithub aria-hidden="true" /> GitHub</>
+              )}
             </a>
           )}
 

@@ -20,6 +20,7 @@ export interface Project {
   type: string;
   team?: string;
   github?: string;
+  website?: string;
   /** Set to false for Gallery-only work that isn't in "My Projects". */
   inTimeline?: boolean;
   tags: string[];
@@ -418,6 +419,41 @@ export const projects: Project[] = [
         type: "image",
         src: "/projects/deskdeck/settings.webp",
         alt: "DeskDeck settings for screen and burn-in: keep screen on, pixel shift and dim when idle",
+      },
+    ],
+  },
+  {
+    slug: "reelvault",
+    title: "ReelVault",
+    role: "Android Developer",
+    date: "Oct 2026",
+    type: "Android video bookmark organizer",
+    website: "https://getreelvault.web.app/",
+    inTimeline: false,
+    tags: ["Kotlin", "Jetpack Compose", "Room", "Firebase"],
+    summary: "An Android app for organizing saved video links, with collections, search and optional cloud sync.",
+    overview: "ReelVault brings the short videos saved across TikTok, Instagram, YouTube, Facebook, X, Pinterest and Xiaohongshu into one library. Share a link to the app or paste it in to create a preview card with the available title, author and thumbnail. It organizes bookmarks rather than downloading videos: tapping a save opens the original app, or a browser when that app is unavailable.\n\nThe library is stored locally with Room, so saved information and organization remain available offline. Collections, tags, notes, favorites and pins help users return to useful videos. Search covers titles, captions, authors, notes, tags and links, with platform and collection filters. Short-link resolution, URL cleaning and duplicate detection keep repeat saves from cluttering the library. Fetching new previews and watching the original videos still require a connection.\n\nOptional Firebase authentication and Firestore sync let users carry their library between devices. Collections can be published as web links that others can browse without installing the app, with an option to import them into ReelVault. JSON export and import provide another way to back up or move the library.\n\nBuilt in Kotlin with Jetpack Compose and Material 3, the app uses MVVM, coroutines and Flow, Hilt, Room and WorkManager. The companion website introduces the app and hosts shared collection pages.",
+    features: [
+      "Quick-save through the Android share sheet, pasted links or a clipboard prompt.",
+      "Platform-aware previews, cached thumbnails and fallback cards when metadata is unavailable.",
+      "Custom collections, tags, notes, favorites, pins, sorting and bulk actions.",
+      "Search and filters across the library, with on-device tagging from hashtags and keyword rules and optional ML Kit thumbnail labeling.",
+      "Local-first storage, optional Firebase sync, and JSON export and import.",
+      "Share collections as public web pages and import shared collections into the app.",
+    ],
+    highlights: [
+      "Developed the native Android interface with Jetpack Compose, including the library, collections, search, item details and quick-save flow.",
+      "Implemented link extraction, short-link resolution, URL normalization and duplicate detection before saving to Room.",
+      "Built the preview retrieval and thumbnail caching workflow with background jobs and platform-specific fallbacks.",
+      "Connected local storage to Firebase authentication and two-way Firestore sync, including soft deletes and duplicate reconciliation.",
+      "Implemented collection sharing, the companion Firebase-hosted website, and JSON backup and restore.",
+    ],
+    cover: "/projects/reelvault/icon.svg",
+    media: [
+      {
+        type: "video",
+        src: "/projects/reelvault/trailer.mp4",
+        poster: "/projects/reelvault/trailer-poster.webp",
       },
     ],
   },

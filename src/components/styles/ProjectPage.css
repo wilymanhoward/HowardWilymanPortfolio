@@ -133,6 +133,10 @@
   border-radius: 12px;
   background: #141118;
 }
+/* Portrait videos would otherwise be taller than the screen. */
+.project-media video {
+  max-height: 85vh;
+}
 .project-media-empty {
   aspect-ratio: 16 / 9;
   display: flex;
