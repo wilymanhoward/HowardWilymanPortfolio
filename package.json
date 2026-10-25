@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/generate-pages.mjs && node scripts/check-seo.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "npm run build && npx firebase-tools deploy --only hosting"
+    "deploy": "npm run build && npx firebase-tools deploy --only hosting",
+    "check:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.1",

@@ -3,6 +3,7 @@ import { FaGithub, FaGlobe } from "react-icons/fa";
 import { getProject, projects } from "../data/projects";
 import { navigate } from "../router";
 import { smoother } from "./Navbar";
+import { pageSeo, structuredData } from "../seo";
 import "./styles/ProjectPage.css";
 
 interface Props {
@@ -45,22 +46,37 @@ const ProjectPage = ({ slug, standalone }: Props) => {
 
   useEffect(() => {
     const previousTitle = document.title;
-    // Per-project description and canonical URL for search results.
-    const description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-    const previousDescription = description?.content;
     const previousCanonical = canonical?.href;
-    if (project) {
-      document.title = `${project.title} | Howard Wilyman`;
-      if (description) description.content = `${project.title}: ${project.summary}`;
-      if (canonical) canonical.href = `https://howardw.web.app/project/${project.slug}`;
-    }
+    const schema = document.getElementById("page-schema");
+    const previousSchema = schema?.textContent;
+    const seo = pageSeo(project);
+    const updates: [string, string][] = [
+      ['meta[name="description"]', seo.description],
+      ['meta[property="og:title"]', seo.title],
+      ['meta[property="og:description"]', seo.description],
+      ['meta[property="og:url"]', seo.url],
+      ['meta[name="twitter:title"]', seo.title],
+      ['meta[name="twitter:description"]', seo.description],
+    ];
+    const previousMeta = updates.map(([selector, value]) => {
+      const element = document.querySelector<HTMLMetaElement>(selector);
+      const previous = element?.content;
+      if (element) element.content = value;
+      return { element, previous };
+    });
+    document.title = project ? seo.title : "Project not found | Howard Wilyman";
+    if (canonical) canonical.href = seo.url;
+    if (schema) schema.textContent = JSON.stringify(structuredData(projects, project));
     pageRef.current?.scrollTo({ top: 0 });
     backRef.current?.focus({ preventScroll: true });
     return () => {
       document.title = previousTitle;
-      if (description && previousDescription) description.content = previousDescription;
       if (canonical && previousCanonical) canonical.href = previousCanonical;
+      if (schema) schema.textContent = previousSchema ?? "";
+      previousMeta.forEach(({ element, previous }) => {
+        if (element && previous !== undefined) element.content = previous;
+      });
     };
   }, [project]);
 

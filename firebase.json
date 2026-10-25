@@ -15,12 +15,6 @@
       "models/rex_eye.png",
       "models/encrypt.cjs"
     ],
-    "rewrites": [
-      {
-        "source": "/project/**",
-        "destination": "/index.html"
-      }
-    ],
     "headers": [
       {
         "source": "**/*.html",
@@ -85,6 +79,8 @@
           }
         ]
       }
-    ]
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false
   }
 }

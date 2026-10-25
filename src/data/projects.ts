@@ -89,7 +89,7 @@ export const projects: Project[] = [
     title: "We Were Mummies",
     role: "Player & Multiplayer Lead",
     shortRole: "Multiplayer Lead",
-    date: "Jun 2026",
+    date: "Jul 2026",
     type: "2-player online co-op game",
     team: "Team of 3",
     tags: ["Unity", "C#", "Photon PUN", "Multiplayer Networking"],
@@ -125,7 +125,7 @@ export const projects: Project[] = [
     github: "https://github.com/wilymanhoward/AquaStrike",
     title: "AquaStrike",
     role: "Solo Developer",
-    date: "Jul 2026",
+    date: "Jun 2026",
     type: "1v1 online multiplayer game",
     team: "Solo",
     tags: ["Unity", "C#"],
@@ -461,6 +461,9 @@ export const projects: Project[] = [
 
 export const timelineProjects = projects.filter(
   (project) => project.inTimeline !== false
+).sort((a, b) =>
+  Number(a.slug === "mr-detective") - Number(b.slug === "mr-detective") ||
+  Number(b.slug === "aquastrike") - Number(a.slug === "aquastrike")
 );
 
 export const getProject = (slug: string | null) =>
