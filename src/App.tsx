@@ -1,25 +1,30 @@
 import { lazy, Suspense } from "react";
 import "./App.css";
-import { getProjectSlug, useProjectSlug } from "./router";
+import { getProjectSlug, isCertificatesPath, usePathname } from "./router";
 
 const CharacterModel = lazy(() => import("./components/Character"));
 const MainContainer = lazy(() => import("./components/MainContainer"));
 const ProjectPage = lazy(() => import("./components/ProjectPage"));
+const CertificatesPage = lazy(() => import("./components/CertificatesPage"));
 import { LoadingProvider } from "./context/LoadingProvider";
 
 // A project link opened directly (e.g. shared /project/codu) loads only the
 // project page, skipping the 3D intro. Projects opened from the gallery show
 // on top of the main page so "Back" returns to the same scroll position.
-const openedOnProject = getProjectSlug() !== null;
+const openedOnProject = getProjectSlug() !== null || isCertificatesPath();
 
 const App = () => {
-  const slug = useProjectSlug();
+  const path = usePathname();
+  const slug = getProjectSlug(path);
+  const showCertificates = isCertificatesPath(path);
 
   if (openedOnProject) {
     return (
       <Suspense>
         {slug ? (
           <ProjectPage slug={slug} standalone />
+        ) : showCertificates ? (
+          <CertificatesPage standalone />
         ) : (
           <RedirectHome />
         )}
@@ -41,6 +46,11 @@ const App = () => {
       {slug && (
         <Suspense>
           <ProjectPage slug={slug} standalone={false} />
+        </Suspense>
+      )}
+      {showCertificates && (
+        <Suspense>
+          <CertificatesPage standalone={false} />
         </Suspense>
       )}
     </>

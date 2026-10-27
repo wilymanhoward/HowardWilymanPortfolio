@@ -3,6 +3,13 @@ import type { Project } from "./data/projects";
 export const SITE_URL = "https://howardw.web.app";
 export const ABOUT = "Howard Wilyman (HowardW) is a Digital Media Technology student focused on gameplay programming, game design and interactive software development, with projects in Unity, C#, Android, Flutter and mixed reality.";
 
+export const CERTIFICATES_SEO = {
+  title: "Certificates | Howard Wilyman",
+  description: "Certificates and awards received by Howard Wilyman (HowardW), including the Mercedes-Benz 2026 Vibathon and EGDAD-XMUM 2025.",
+  url: `${SITE_URL}/certificates`,
+  image: `${SITE_URL}/og-preview.jpg`,
+};
+
 export function pageSeo(project?: Project | null) {
   const url = project ? `${SITE_URL}/project/${project.slug}` : `${SITE_URL}/`;
   return {

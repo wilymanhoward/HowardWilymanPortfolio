@@ -372,3 +372,31 @@
   outline: 2px solid var(--accentColor);
   outline-offset: 3px;
 }
+.work-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.work-certs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #eae5ec;
+  border-bottom: 1px solid #5e5e5e;
+  white-space: nowrap;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+.work-certs:hover,
+.work-certs:focus-visible {
+  color: var(--accentColor);
+  border-color: var(--accentColor);
+}
+@media only screen and (max-width: 600px) {
+  .work-certs {
+    font-size: 14px;
+  }
+}
