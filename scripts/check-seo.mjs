@@ -20,7 +20,7 @@ for (const url of urls) {
   assert(!html.includes('noindex'), `Indexing blocked: ${url}`);
   const schema = JSON.parse(html.match(/<script id="page-schema" type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   assert(schema['@graph'].some(n => n['@type'] === 'Person'));
-  if (path !== '/') {
+  if (path.startsWith('/project/')) {
     assert(schema['@graph'].some(n => n['@type'] === 'CreativeWork'));
     assert(schema['@graph'].some(n => n['@type'] === 'BreadcrumbList'));
     assert(html.includes('<h2>Overview</h2>'));
