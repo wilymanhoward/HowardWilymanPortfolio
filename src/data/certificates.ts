@@ -5,7 +5,8 @@ export interface Certificate {
   title: string;
   kind: string;
   issuer: string;
-  date: string;
+  /** Leave out when the certificate isn't dated. */
+  date?: string;
   image: string;
   alt: string;
 }
@@ -50,5 +51,13 @@ export const certificates: Certificate[] = [
     date: "Apr 2025",
     image: "/certificates/simfoni-2025-photography.webp",
     alt: "Certificate of Appreciation presented to Howard Wilyman for his commitment as Head of Photography and Videography at the Simfoni event held by GADPA at Xiamen University Malaysia on 25 April 2025",
+  },
+  {
+    title: "Huawei Talk",
+    kind: "Certificate of Participation",
+    issuer: "AI (MINDS) Club, Xiamen University Malaysia, with Huawei ICT Academy",
+    date: "Apr 2025",
+    image: "/certificates/huawei-talk-ai-minds-club.webp",
+    alt: "Certificate of Participation presented to Howard Wilyman for active participation in the Huawei Talk organized by the AI (MINDS) Club at Xiamen University Malaysia, with Huawei ICT Academy",
   },
 ];
