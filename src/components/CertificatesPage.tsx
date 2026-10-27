@@ -30,6 +30,7 @@ const CertificatesPage = ({ standalone }: { standalone: boolean }) => {
     let lastStep = 0;
     let lastWheel = 0;
     const onWheel = (e: WheelEvent) => {
+      if (!page.contains(e.target as Node)) return;
       const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       if (e.ctrlKey || viewerRef.current?.open || Math.abs(delta) < 2) return;
       e.preventDefault();
@@ -40,8 +41,11 @@ const CertificatesPage = ({ standalone }: { standalone: boolean }) => {
       lastStep = now;
       setIndex((i) => Math.min(last, Math.max(0, i + Math.sign(delta))));
     };
-    page.addEventListener("wheel", onWheel, { passive: false });
-    return () => page.removeEventListener("wheel", onWheel);
+    // Window capture phase: when this page opens over the main site, the
+    // paused ScrollSmoother swallows wheel events at the document level, so a
+    // listener on the page itself would never hear them.
+    window.addEventListener("wheel", onWheel, { capture: true, passive: false });
+    return () => window.removeEventListener("wheel", onWheel, { capture: true });
   }, []);
 
   const open = (c: Certificate) => {
