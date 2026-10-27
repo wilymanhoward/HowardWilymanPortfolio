@@ -45,6 +45,14 @@ export const certificates: Certificate[] = [
     alt: "Xiamen University Malaysia Best Award Certificate of Achievement: 1st Place, Best Advanced and Creative 3D FPS Adventure Game for the project Code Enternis at GD-XMUM 2025, presented to Louise Ellen, Gunawan Nelsen Keane, Sartayeva Aidyn, Tando Jocelyne Audrey and Wilyman Howard",
   },
   {
+    title: "Head of Photography & Videography, Adiwarna Fest",
+    kind: "Certificate of Appreciation",
+    issuer: "GADPA, Xiamen University Malaysia",
+    date: "Jun 2025",
+    image: "/certificates/adiwarna-fest-2025-photography.webp",
+    alt: "Certificate of Appreciation presented to Howard Wilyman for his commitment as Head of Photographer and Videographer at the Adiwarna Fest events held by GADPA at Xiamen University Malaysia on 28 to 29 June 2025",
+  },
+  {
     title: "Head of Photography & Videography, Simfoni",
     kind: "Certificate of Appreciation",
     issuer: "GADPA, Xiamen University Malaysia",
