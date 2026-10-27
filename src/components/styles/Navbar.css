@@ -158,4 +158,7 @@
     width: 13px;
     height: 13px;
   }
+  .navbar-certs + .navbar-resume {
+    margin-left: 8px;
+  }
 }

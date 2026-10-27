@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { TbNotes } from "react-icons/tb";
+import { TbCertificate, TbNotes } from "react-icons/tb";
+import { navigate } from "../router";
 import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
@@ -61,7 +62,20 @@ const Navbar = () => {
         >
           wilymanhoward@gmail.com
         </a>
-        {/* Phones only: the floating resume button would cover content there. */}
+        {/* Phones only: the floating certificates and resume buttons would cover content there. */}
+        <a
+          href="/certificates"
+          className="navbar-resume navbar-certs"
+          aria-label="View Howard Wilyman's certificates"
+          onClick={(e) => {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+            e.preventDefault();
+            navigate("/certificates");
+          }}
+        >
+          {/* Short label: "CERTIFICATES" doesn't fit beside RESUME on a phone. */}
+          CERTS <TbCertificate />
+        </a>
         <a
           href="/Howard_Wilyman_Resume.pdf"
           className="navbar-resume"

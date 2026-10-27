@@ -4,9 +4,10 @@ import {
   FaLinkedinIn,
 } from "react-icons/fa6";
 import "./styles/SocialIcons.css";
-import { TbNotes } from "react-icons/tb";
+import { TbCertificate, TbNotes } from "react-icons/tb";
 import { useEffect } from "react";
 import HoverLinks from "./HoverLinks";
+import { navigate } from "../router";
 
 const SocialIcons = () => {
   useEffect(() => {
@@ -98,18 +99,36 @@ const SocialIcons = () => {
           </a>
         </span>
       </div>
-      <a
-        className="resume-button"
-        href="/Howard_Wilyman_Resume.pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="View Howard Wilyman Resume (PDF)"
-      >
-        <HoverLinks text="RESUME" />
-        <span>
-          <TbNotes />
-        </span>
-      </a>
+      <div className="resume-links">
+        <a
+          className="resume-button"
+          href="/certificates"
+          aria-label="View Howard Wilyman's certificates"
+          onClick={(e) => {
+            // Let ctrl/cmd-click open a new tab as usual.
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+            e.preventDefault();
+            navigate("/certificates");
+          }}
+        >
+          <HoverLinks text="CERTIFICATES" />
+          <span>
+            <TbCertificate />
+          </span>
+        </a>
+        <a
+          className="resume-button"
+          href="/Howard_Wilyman_Resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View Howard Wilyman Resume (PDF)"
+        >
+          <HoverLinks text="RESUME" />
+          <span>
+            <TbNotes />
+          </span>
+        </a>
+      </div>
     </div>
   );
 };

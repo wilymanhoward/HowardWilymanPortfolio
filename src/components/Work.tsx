@@ -1,5 +1,4 @@
 ﻿import "./styles/Work.css";
-import { MdArrowOutward } from "react-icons/md";
 import { projects, projectCover } from "../data/projects";
 import { navigate } from "../router";
 import gsap from "gsap";
@@ -66,23 +65,9 @@ const Work = () => {
   return (
     <div className="work-section" id="work">
       <div className="work-container section-container">
-        <div className="work-heading">
-          <h2>
-            <span>Gallery</span>
-          </h2>
-          <a
-            className="work-certs"
-            href="/certificates"
-            data-cursor="disable"
-            onClick={(e) => {
-              if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-              e.preventDefault();
-              navigate("/certificates");
-            }}
-          >
-            Certificates <MdArrowOutward aria-hidden="true" />
-          </a>
-        </div>
+        <h2>
+          <span>Gallery</span>
+        </h2>
         <div className="work-flex">
           {projects.map((project, index) => {
             const cover = projectCover(project);

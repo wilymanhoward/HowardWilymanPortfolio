@@ -62,6 +62,19 @@
   z-index: 1;
   transition: transform 0.3s ease-out, color 0.3s ease-out;
 }
+/* Certificates and Resume side by side in the bottom-right corner. */
+.resume-links {
+  position: absolute;
+  right: 0;
+  bottom: 40px;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+.resume-links .resume-button {
+  position: static;
+}
 .resume-button {
   position: absolute;
   z-index: 99;
