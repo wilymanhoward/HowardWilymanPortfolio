@@ -13,6 +13,14 @@ export interface Certificate {
 
 export const certificates: Certificate[] = [
   {
+    title: "Claude Code in Action",
+    kind: "Course Completion Badge",
+    issuer: "Claude Academy",
+    date: "Nov 2026",
+    image: "/certificates/claude-code-in-action-2026.webp",
+    alt: "Claude Academy course completion badge for Claude Code in Action, presented to Howard Wilyman, issued 7 November 2026",
+  },
+  {
     title: "2026 Vibathon",
     kind: "Certificate of Appreciation",
     issuer: "Mercedes-Benz Tech Malaysia",
